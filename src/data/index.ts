@@ -32,3 +32,7 @@ export function getFeaturedReviews(limit = 12): FeaturedReview[] {
     .sort((a, b) => a.funnyRank - b.funnyRank)
     .slice(0, limit)
 }
+
+export function getReviewSourceUrl(review: { sourceUrl: string }): string {
+  return review.sourceUrl
+}

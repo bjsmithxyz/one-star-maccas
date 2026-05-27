@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { SITE_NAME } from '../constants/branding'
 import { RandomButton } from './RandomButton'
 
 type LayoutProps = {
@@ -20,7 +21,7 @@ export function Layout({ children, excludeSlug }: LayoutProps) {
             </span>
             <div>
               <p className="font-display text-lg leading-none sm:text-xl">
-                One Star Maccas
+                {SITE_NAME}
               </p>
             </div>
           </Link>

@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import { Layout } from '../components/Layout'
 import { RandomButton } from '../components/RandomButton'
 import { ReviewCard } from '../components/ReviewCard'
-import { getAllRestaurants, getFeaturedReviews } from '../data'
+import { SITE_NAME } from '../constants/branding'
+import { getAllRestaurants, getFeaturedReviews, getReviewSourceUrl } from '../data'
 
 export function HomePage() {
   const featured = getFeaturedReviews(12)
@@ -19,8 +20,7 @@ export function HomePage() {
             English edition
           </p>
           <h1 className="font-display text-4xl leading-none text-mcd-charcoal sm:text-6xl">
-            One Star
-            <span className="block text-mcd-red">Maccas</span>
+            {SITE_NAME}
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base text-mcd-charcoal/75 sm:text-lg">
             The worst 1-star Google reviews from McDonald&apos;s around the
@@ -30,8 +30,8 @@ export function HomePage() {
           <div className="mt-8 flex flex-col items-center gap-3">
             <RandomButton size="lg" />
             <p className="text-sm text-mcd-charcoal/60">
-              {getAllRestaurants().length} restaurants · {totalReviews} legendary
-              rants
+              {getAllRestaurants().length} restaurants
+              {totalReviews > 0 && ` · ${totalReviews} reviews`}
             </p>
           </div>
         </div>
@@ -42,19 +42,30 @@ export function HomePage() {
           <h2 className="font-display text-2xl text-mcd-charcoal sm:text-3xl">
             Hall of Fame
           </h2>
-          <p className="text-sm text-mcd-charcoal/60">Tap a card to visit the restaurant</p>
+          <p className="text-sm text-mcd-charcoal/60">Tap location to visit the restaurant</p>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((item) => (
-            <ReviewCard
-              key={item.id}
-              review={item}
-              restaurant={item.restaurant}
-              showLocation
-            />
-          ))}
-        </div>
+        {featured.length > 0 ? (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((item) => (
+              <ReviewCard
+                key={item.id}
+                review={item}
+                restaurant={item.restaurant}
+                showLocation
+                sourceUrl={getReviewSourceUrl(item)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border-2 border-dashed border-mcd-charcoal/15 bg-white/70 px-6 py-12 text-center">
+            <p className="font-display text-xl text-mcd-charcoal">No reviews yet</p>
+            <p className="mx-auto mt-2 max-w-md text-sm text-mcd-charcoal/70">
+              Real 1-star Google reviews with live links will appear here once
+              they&apos;re added to the dataset.
+            </p>
+          </div>
+        )}
       </section>
     </Layout>
   )

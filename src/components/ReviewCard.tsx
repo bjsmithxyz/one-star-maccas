@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
+import { ReviewReactions } from './ReviewReactions'
 import type { Review, Restaurant } from '../types'
 
 type ReviewCardProps = {
   review: Review
   restaurant?: Restaurant
   showLocation?: boolean
+  sourceUrl: string
 }
 
 function formatDate(date: string) {
@@ -19,8 +21,9 @@ export function ReviewCard({
   review,
   restaurant,
   showLocation = false,
+  sourceUrl,
 }: ReviewCardProps) {
-  const card = (
+  return (
     <article className="group relative rounded-2xl border-2 border-mcd-charcoal/10 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-mcd-red/30 hover:shadow-lg sm:p-6">
       <span
         aria-hidden
@@ -44,23 +47,29 @@ export function ReviewCard({
         <time dateTime={review.date}>{formatDate(review.date)}</time>
       </div>
 
-      {showLocation && restaurant && (
-        <div className="mt-4">
-          <span className="inline-flex items-center gap-1 rounded-full bg-mcd-gold/30 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-mcd-charcoal">
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        {showLocation && restaurant && (
+          <Link
+            to={`/r/${restaurant.slug}`}
+            className="inline-flex items-center gap-1 rounded-full bg-mcd-gold/30 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-mcd-charcoal transition hover:bg-mcd-gold/50"
+          >
             {restaurant.flag} {restaurant.city}, {restaurant.country}
-          </span>
-        </div>
-      )}
+          </Link>
+        )}
+
+        {sourceUrl && (
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-mcd-red transition hover:text-mcd-charcoal"
+          >
+            View live review ↗
+          </a>
+        )}
+      </div>
+
+      <ReviewReactions reviewId={review.id} />
     </article>
   )
-
-  if (showLocation && restaurant) {
-    return (
-      <Link to={`/r/${restaurant.slug}`} className="block no-underline text-inherit">
-        {card}
-      </Link>
-    )
-  }
-
-  return card
 }

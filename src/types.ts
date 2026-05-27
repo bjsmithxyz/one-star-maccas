@@ -5,7 +5,7 @@ export type Review = {
   date: string
   rating: 1
   funnyRank: number
-  sourceUrl?: string
+  sourceUrl: string
   imageUrl?: string
 }
 
@@ -16,8 +16,6 @@ export type Restaurant = {
   city: string
   country: string
   flag: string
-  overallRating: number
-  totalReviews: number
   googleMapsUrl?: string
   reviews: Review[]
 }

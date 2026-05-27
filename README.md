@@ -1,8 +1,6 @@
-# 1-Star McD's
+# 1 star maccas
 
-A fun static site collating the funniest 1-star Google reviews from McDonald's locations around the world. English edition first.
-
-**Golden Arches, Broken Dreams.**
+The worst 1-star Google reviews from McDonald's around the world. English edition first.
 
 ## Run locally
 
@@ -20,23 +18,34 @@ npm run build
 npm run preview
 ```
 
-## Add restaurants or reviews
+## Add real reviews
 
-Edit [`src/data/restaurants.json`](src/data/restaurants.json):
+Edit [`src/data/restaurants.json`](src/data/restaurants.json). Each review must be a real Google review with a live link — no placeholder or fabricated text.
 
-- Each restaurant needs a unique `slug` (used in URLs like `/r/times-square-nyc`).
-- Add 1-star reviews with `funnyRank` — `1` is funniest at that location.
-- The home page featured feed pulls reviews sorted by `funnyRank`.
+```json
+{
+  "id": "r-001-1",
+  "text": "Exact review text from Google",
+  "author": "Reviewer name",
+  "date": "2024-11-03",
+  "rating": 1,
+  "funnyRank": 1,
+  "sourceUrl": "https://www.google.com/maps/reviews/..."
+}
+```
+
+- `sourceUrl` is required — links to the live Google review
+- `funnyRank`: `1` is funniest at that location
+- `imageUrl` is optional — only use photos from the actual review
+
+Reactions are stored in the visitor's browser only. Counts start at zero with no seeded data.
 
 ## Deploy
 
-The build output is in `dist/`. Deploy to any static host (Netlify, Cloudflare Pages, GitHub Pages).
+The build output is in `dist/`. Pushes to `master` deploy to GitHub Pages automatically.
 
-For client-side routing, configure SPA fallback:
-
-- **Netlify / Cloudflare:** `public/_redirects` is included (`/* /index.html 200`)
-- **GitHub Pages:** add a `404.html` copy of `index.html` or use your host's SPA setting
+Live site: https://bjsmithxyz.github.io/one-star-maccas/
 
 ## Disclaimer
 
-Fan parody site — not affiliated with McDonald's Corporation. Reviews are publicly posted user content, curated for entertainment.
+Fan parody site — not affiliated with McDonald's Corporation. Reviews must be publicly posted user content with links to the original.

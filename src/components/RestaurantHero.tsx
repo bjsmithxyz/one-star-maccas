@@ -2,20 +2,20 @@ import type { Restaurant } from '../types'
 
 type RestaurantHeroProps = {
   restaurant: Restaurant
-  heroReview?: {
-    imageUrl: string
+  heroImage?: {
+    url: string
     author: string
   }
 }
 
-export function RestaurantHero({ restaurant, heroReview }: RestaurantHeroProps) {
+export function RestaurantHero({ restaurant, heroImage }: RestaurantHeroProps) {
   return (
     <section className="overflow-hidden rounded-3xl border-4 border-mcd-charcoal bg-white shadow-[0_8px_0_#27251f]">
       <div className="relative min-h-[220px] sm:min-h-[260px]">
-        {heroReview ? (
+        {heroImage ? (
           <>
             <img
-              src={heroReview.imageUrl}
+              src={heroImage.url}
               alt={`Photo from a 1-star review of ${restaurant.name}`}
               className="absolute inset-0 h-full w-full object-cover"
             />
@@ -36,25 +36,11 @@ export function RestaurantHero({ restaurant, heroReview }: RestaurantHeroProps) 
             <p className="mt-2 text-white/80">
               Their finest 1-star masterpieces
             </p>
-            {heroReview && (
+            {heroImage && (
               <p className="mt-3 text-xs font-medium uppercase tracking-wide text-white/60">
-                Photo from a 1-star review by {heroReview.author}
+                Photo from a 1-star review by {heroImage.author}
               </p>
             )}
-          </div>
-
-          <div className="flex flex-col items-end gap-2">
-            <div className="rounded-2xl bg-mcd-gold px-4 py-2 text-center shadow-lg">
-              <p className="text-xs font-bold uppercase tracking-wide text-mcd-charcoal/70">
-                Overall
-              </p>
-              <p className="font-display text-2xl text-mcd-charcoal">
-                {restaurant.overallRating.toFixed(1)} ★
-              </p>
-            </div>
-            <p className="text-sm text-white/75">
-              {restaurant.totalReviews.toLocaleString()} total reviews
-            </p>
           </div>
         </div>
       </div>
