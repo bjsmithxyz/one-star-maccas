@@ -1,29 +1,39 @@
+import { useMemo } from 'react'
 import type { Restaurant } from '../types'
+import { getRandomReviewWithImage } from '../data/hero'
 
 type RestaurantHeroProps = {
   restaurant: Restaurant
-  heroImage?: {
-    url: string
-    author: string
-  }
 }
 
-export function RestaurantHero({ restaurant, heroImage }: RestaurantHeroProps) {
+export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
+  const reviewOverlay = useMemo(
+    () => getRandomReviewWithImage(restaurant),
+    [restaurant.slug, restaurant.reviews],
+  )
+
   return (
     <section className="overflow-hidden rounded-3xl border-4 border-mcd-charcoal bg-white shadow-[0_8px_0_#27251f]">
-      <div className="relative min-h-[220px] sm:min-h-[260px]">
-        {heroImage ? (
-          <>
-            <img
-              src={heroImage.url}
-              alt={`Photo from a 1-star review of ${restaurant.name}`}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/25" />
-          </>
+      <div className="relative min-h-[240px] sm:min-h-[280px]">
+        {restaurant.imageUrl ? (
+          <img
+            src={restaurant.imageUrl}
+            alt={`${restaurant.name} exterior`}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-mcd-gold via-mcd-red to-mcd-charcoal" />
         )}
+
+        {reviewOverlay?.imageUrl && (
+          <img
+            src={reviewOverlay.imageUrl}
+            alt={`Photo from a 1-star review by ${reviewOverlay.author}`}
+            className="absolute inset-0 h-full w-full object-cover opacity-45"
+          />
+        )}
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/35" />
 
         <div className="relative flex h-full flex-wrap items-end justify-between gap-4 p-6 sm:p-8">
           <div className="max-w-2xl">
@@ -36,9 +46,9 @@ export function RestaurantHero({ restaurant, heroImage }: RestaurantHeroProps) {
             <p className="mt-2 text-white/80">
               Their finest 1-star masterpieces
             </p>
-            {heroImage && (
+            {reviewOverlay?.imageUrl && (
               <p className="mt-3 text-xs font-medium uppercase tracking-wide text-white/60">
-                Photo from a 1-star review by {heroImage.author}
+                Review photo by {reviewOverlay.author}
               </p>
             )}
           </div>

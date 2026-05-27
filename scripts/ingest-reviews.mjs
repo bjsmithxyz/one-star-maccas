@@ -16,6 +16,7 @@ import { loadEnvFile } from './lib/load-env.mjs'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 const DATA_PATH = path.join(ROOT, 'src/data/restaurants.json')
+const PHOTOS_DIR = path.join(ROOT, 'public/photos')
 
 loadEnvFile(path.join(ROOT, '.env'))
 
@@ -95,13 +96,15 @@ async function getPlaceDetailsNew(placeId) {
     headers: {
       'X-Goog-Api-Key': API_KEY,
       'X-Goog-FieldMask':
-        'id,displayName,googleMapsUri,googleMapsLinks,reviews,rating,userRatingCount',
+        'id,displayName,googleMapsUri,googleMapsLinks,reviews,rating,userRatingCount,photos',
     },
   })
 }
 
 async function getPlaceDetailsLegacy(placeId) {
-  const fields = encodeURIComponent('reviews,rating,user_ratings_total,url,name')
+  const fields = encodeURIComponent(
+    'reviews,rating,user_ratings_total,url,name,photos',
+  )
   const url =
     `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&reviews_sort=newest&key=${API_KEY}`
 
@@ -126,6 +129,100 @@ function normalizePlaceId(place) {
   return undefined
 }
 
+async function downloadNewPhoto(photoName, destPath) {
+  const url =
+    `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=900&maxWidthPx=1400&skipHttpRedirect=false`
+
+  const response = await fetch(url, {
+    headers: { 'X-Goog-Api-Key': API_KEY },
+    redirect: 'follow',
+  })
+
+  if (!response.ok) {
+    throw new Error(`Photo download failed (${response.status})`)
+  }
+
+  const contentType = response.headers.get('content-type') ?? 'image/jpeg'
+  const extension = contentType.includes('png') ? 'png' : 'jpg'
+  const finalPath = destPath.replace(/\.(jpg|jpeg|png)$/i, `.${extension}`)
+
+  fs.mkdirSync(path.dirname(finalPath), { recursive: true })
+  fs.writeFileSync(finalPath, Buffer.from(await response.arrayBuffer()))
+
+  return finalPath
+}
+
+async function downloadLegacyPhoto(photoReference, destPath) {
+  const url =
+    `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1400&photo_reference=${photoReference}&key=${API_KEY}`
+
+  const response = await fetch(url, { redirect: 'follow' })
+  if (!response.ok) {
+    throw new Error(`Legacy photo download failed (${response.status})`)
+  }
+
+  fs.mkdirSync(path.dirname(destPath), { recursive: true })
+  fs.writeFileSync(destPath, Buffer.from(await response.arrayBuffer()))
+  return destPath
+}
+
+function toPublicPath(absolutePath) {
+  return `/${path.relative(path.join(ROOT, 'public'), absolutePath).replace(/\\/g, '/')}`
+}
+
+async function downloadRestaurantPhoto(place, slug, api) {
+  const dest = path.join(PHOTOS_DIR, slug, 'place.jpg')
+
+  try {
+    if (api === 'new' && place.photos?.[0]?.name) {
+      const saved = await downloadNewPhoto(place.photos[0].name, dest)
+      return toPublicPath(saved)
+    }
+
+    if (api === 'legacy' && place.photos?.[0]?.photo_reference) {
+      const saved = await downloadLegacyPhoto(place.photos[0].photo_reference, dest)
+      return toPublicPath(saved)
+    }
+  } catch (error) {
+    console.warn(`  Could not download place photo: ${error.message}`)
+  }
+
+  return undefined
+}
+
+async function attachReviewPhotos(reviews, slug, api, placeReviews = []) {
+  const updated = []
+
+  for (const review of reviews) {
+    const next = { ...review }
+    if (next.imageUrl) {
+      updated.push(next)
+      continue
+    }
+
+    const apiReview = placeReviews.find(
+      (candidate) =>
+        (candidate.googleMapsUri ?? candidate.authorAttribution?.uri) ===
+          review.sourceUrl ||
+        (candidate.text?.text ?? candidate.text ?? '').trim() === review.text,
+    )
+
+    try {
+      if (api === 'new' && apiReview?.photos?.[0]?.name) {
+        const dest = path.join(PHOTOS_DIR, slug, `${review.id}.jpg`)
+        const saved = await downloadNewPhoto(apiReview.photos[0].name, dest)
+        next.imageUrl = toPublicPath(saved)
+      }
+    } catch (error) {
+      console.warn(`  Review photo skipped (${review.id}): ${error.message}`)
+    }
+
+    updated.push(next)
+  }
+
+  return updated
+}
+
 function mapNewReviews(place, restaurant, placeReviewsUri) {
   const reviews = place.reviews ?? []
 
@@ -145,7 +242,6 @@ function mapNewReviews(place, restaurant, placeReviewsUri) {
         review.authorAttribution?.uri ??
         placeReviewsUri ??
         place.googleMapsUri,
-      imageUrl: review.photos?.[0]?.googleMapsUri,
     }))
     .filter((review) => Boolean(review.sourceUrl))
 }
@@ -180,16 +276,18 @@ function rankReviews(reviews) {
 }
 
 function mergeReviews(existing, incoming) {
-  const seen = new Set(existing.map((review) => review.sourceUrl))
-  const merged = [...existing]
+  const bySource = new Map(existing.map((review) => [review.sourceUrl, { ...review }]))
 
   for (const review of incoming) {
-    if (seen.has(review.sourceUrl)) continue
-    seen.add(review.sourceUrl)
-    merged.push(review)
+    const current = bySource.get(review.sourceUrl)
+    if (current) {
+      if (review.imageUrl) current.imageUrl = review.imageUrl
+      continue
+    }
+    bySource.set(review.sourceUrl, review)
   }
 
-  return rankReviews(merged)
+  return rankReviews([...bySource.values()])
 }
 
 async function resolvePlace(restaurant) {
@@ -235,25 +333,45 @@ async function ingestRestaurant(restaurant) {
       ? mapNewReviews(place, restaurant, placeReviewsUri)
       : mapLegacyReviews(place, restaurant)
 
-  const merged = mergeReviews(restaurant.reviews ?? [], incoming)
-
-  console.log(
-    `  ${api} API · placeId ${placeId} · +${incoming.length} new 1-star (${merged.length} total)`,
+  const incomingWithPhotos = await attachReviewPhotos(
+    incoming,
+    restaurant.slug,
+    api,
+    place.reviews ?? [],
   )
 
-  if (incoming.length === 0) {
+  const merged = mergeReviews(restaurant.reviews ?? [], incomingWithPhotos)
+  const reviewsWithPhotos = await attachReviewPhotos(
+    merged,
+    restaurant.slug,
+    api,
+    place.reviews ?? [],
+  )
+  const imageUrl =
+    (await downloadRestaurantPhoto(place, restaurant.slug, api)) ??
+    restaurant.imageUrl
+
+  console.log(
+    `  ${api} API · placeId ${placeId} · +${incomingWithPhotos.length} new 1-star (${reviewsWithPhotos.length} total)`,
+  )
+  console.log(
+    `  photos · place ${imageUrl ? 'yes' : 'no'} · review images ${reviewsWithPhotos.filter((review) => review.imageUrl).length}`,
+  )
+
+  if (incomingWithPhotos.length === 0) {
     console.warn('  No 1-star English reviews returned (API returns up to 5 reviews).')
   }
 
   return {
     ...restaurant,
     placeId,
+    imageUrl,
     googleMapsUrl:
       place.googleMapsUri ??
       place.googleMapsLinks?.placeUri ??
       place.url ??
       restaurant.googleMapsUrl,
-    reviews: merged,
+    reviews: reviewsWithPhotos,
   }
 }
 

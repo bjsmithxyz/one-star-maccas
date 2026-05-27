@@ -4,7 +4,6 @@ import { Layout } from '../components/Layout'
 import { RandomButton } from '../components/RandomButton'
 import { RestaurantHero } from '../components/RestaurantHero'
 import { ReviewCard } from '../components/ReviewCard'
-import { getHeroReview } from '../data/hero'
 import { SITE_NAME } from '../constants/branding'
 import { getRestaurantBySlug, getReviewSourceUrl } from '../data'
 
@@ -25,7 +24,6 @@ export function RestaurantPage() {
   const reviews = [...restaurant.reviews].sort(
     (a, b) => a.funnyRank - b.funnyRank,
   )
-  const heroReview = getHeroReview(restaurant)
 
   return (
     <Layout excludeSlug={restaurant.slug}>
@@ -37,14 +35,7 @@ export function RestaurantPage() {
           ← Back to all reviews
         </Link>
 
-        <RestaurantHero
-          restaurant={restaurant}
-          heroImage={
-            heroReview?.imageUrl
-              ? { url: heroReview.imageUrl, author: heroReview.author }
-              : undefined
-          }
-        />
+        <RestaurantHero restaurant={restaurant} />
 
         <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="font-display text-2xl text-mcd-charcoal">
