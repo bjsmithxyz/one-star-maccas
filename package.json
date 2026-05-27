@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ingest": "node scripts/ingest-reviews.mjs",
+    "ingest:dry": "node scripts/ingest-reviews.mjs --dry-run"
   },
   "dependencies": {
     "react": "^19.2.6",
