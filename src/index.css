@@ -1,0 +1,103 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-mcd-gold: #ffc72c;
+  --color-mcd-red: #da291c;
+  --color-mcd-cream: #fff8ee;
+  --color-mcd-charcoal: #27251f;
+  --font-display: 'Archivo Black', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-mcd-cream text-mcd-charcoal font-body antialiased;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgb(255 199 44 / 0.18), transparent 28%),
+      radial-gradient(circle at 80% 0%, rgb(218 41 28 / 0.12), transparent 24%);
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .review-stagger > * {
+    animation: fade-up 0.45s ease both;
+  }
+
+  .review-stagger > *:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+  .review-stagger > *:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+  .review-stagger > *:nth-child(3) {
+    animation-delay: 0.15s;
+  }
+  .review-stagger > *:nth-child(4) {
+    animation-delay: 0.2s;
+  }
+  .review-stagger > *:nth-child(5) {
+    animation-delay: 0.25s;
+  }
+
+  .random-spin {
+    animation: random-spin 0.35s ease;
+  }
+
+  .globe-flash {
+    animation: globe-flash 0.25s ease;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes random-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  35% {
+    transform: rotate(-4deg) scale(0.97);
+  }
+  70% {
+    transform: rotate(4deg) scale(1.03);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes globe-flash {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

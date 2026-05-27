@@ -1,0 +1,87 @@
+import { Link } from 'react-router-dom'
+import { Layout } from '../components/Layout'
+import { RandomButton } from '../components/RandomButton'
+import { ReviewCard } from '../components/ReviewCard'
+import { getAllRestaurants, getFeaturedReviews } from '../data'
+
+export function HomePage() {
+  const featured = getFeaturedReviews(12)
+  const totalReviews = getAllRestaurants().reduce(
+    (sum, restaurant) => sum + restaurant.reviews.length,
+    0,
+  )
+
+  return (
+    <Layout>
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+        <div className="text-center">
+          <p className="mb-3 inline-flex rounded-full bg-mcd-red/10 px-4 py-1 text-sm font-semibold uppercase tracking-widest text-mcd-red">
+            English edition
+          </p>
+          <h1 className="font-display text-4xl leading-none text-mcd-charcoal sm:text-6xl">
+            One Star
+            <span className="block text-mcd-red">Maccas</span>
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base text-mcd-charcoal/75 sm:text-lg">
+            The worst 1-star Google reviews from McDonald&apos;s around the
+            world.
+          </p>
+
+          <div className="mt-8 flex flex-col items-center gap-3">
+            <RandomButton size="lg" />
+            <p className="text-sm text-mcd-charcoal/60">
+              {getAllRestaurants().length} restaurants · {totalReviews} legendary
+              rants
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <h2 className="font-display text-2xl text-mcd-charcoal sm:text-3xl">
+            Hall of Fame
+          </h2>
+          <p className="text-sm text-mcd-charcoal/60">Tap a card to visit the restaurant</p>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.map((item) => (
+            <ReviewCard
+              key={item.id}
+              review={item}
+              restaurant={item.restaurant}
+              showLocation
+            />
+          ))}
+        </div>
+      </section>
+    </Layout>
+  )
+}
+
+export function NotFoundPage() {
+  return (
+    <Layout>
+      <section className="mx-auto flex max-w-xl flex-col items-center px-4 py-20 text-center sm:px-6">
+        <p className="text-6xl">🍟</p>
+        <h1 className="mt-4 font-display text-3xl text-mcd-charcoal">
+          This McDonald&apos;s doesn&apos;t exist
+        </h1>
+        <p className="mt-2 text-mcd-charcoal/70">
+          Maybe it closed. Maybe it was never real. Maybe the ice cream machine
+          ate it.
+        </p>
+        <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
+          <RandomButton size="lg" label="Try Random" />
+          <Link
+            to="/"
+            className="rounded-full border-2 border-mcd-charcoal/20 px-6 py-3 font-semibold text-mcd-charcoal transition hover:border-mcd-red hover:text-mcd-red"
+          >
+            Back home
+          </Link>
+        </div>
+      </section>
+    </Layout>
+  )
+}

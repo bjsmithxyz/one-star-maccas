@@ -1,0 +1,1014 @@
+[
+  {
+    "id": "mcd-001",
+    "slug": "times-square-nyc",
+    "name": "McDonald's Times Square",
+    "city": "New York",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "overallRating": 3.1,
+    "totalReviews": 8420,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Times+Square",
+    "reviews": [
+      {
+        "id": "r-001-1",
+        "text": "I asked for a Happy Meal and they gave me a Sad Meal. The toy was just a receipt. My daughter cried for forty minutes. I cried for forty-one.",
+        "author": "Marcus T.",
+        "date": "2024-11-03",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-001-2",
+        "text": "The ice cream machine wasn't working. I know, shocking. But the employee looked me dead in the eye and said 'it's a lifestyle choice.' Sir, it's dairy.",
+        "author": "Jenny L.",
+        "date": "2024-08-19",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-001-3",
+        "text": "Ordered a Big Mac. Received a medium sadness between two buns. The lettuce had given up on life. Five stars for honesty, one star because I can't give five.",
+        "author": "Google User",
+        "date": "2025-01-12",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-001-4",
+        "text": "Tourist trap energy. Paid $18 for nuggets that tasted like they were fried in regret. The clown would weep.",
+        "author": "Dave R.",
+        "date": "2024-06-22",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/times-square-nyc.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-002",
+    "slug": "oxford-street-london",
+    "name": "McDonald's Oxford Street",
+    "city": "London",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "overallRating": 2.9,
+    "totalReviews": 5230,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Oxford+Street+London",
+    "reviews": [
+      {
+        "id": "r-002-1",
+        "text": "Queue longer than the Brexit negotiations. Chips colder than British small talk. Absolutely diabolical.",
+        "author": "Oliver W.",
+        "date": "2024-10-05",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-002-2",
+        "text": "Asked for no gherkins. Received extra gherkins and a stare that could curdle milk. Which is fine because the McFlurry machine was broken anyway.",
+        "author": "Priya K.",
+        "date": "2024-12-01",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-002-3",
+        "text": "My burger was so flat it could've been posted through a letterbox. Royal Mail could learn something.",
+        "author": "James H.",
+        "date": "2025-02-14",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-002-4",
+        "text": "£12 for a meal deal that tasted like it owed me money. Even the seagulls outside looked disappointed.",
+        "author": "Emma S.",
+        "date": "2024-07-30",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/oxford-street-london.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-003",
+    "slug": "sydney-cbd",
+    "name": "McDonald's Sydney CBD",
+    "city": "Sydney",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "overallRating": 3.3,
+    "totalReviews": 3890,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Sydney+CBD",
+    "reviews": [
+      {
+        "id": "r-003-1",
+        "text": "Mate. MATE. The chips had less crunch than a wet thong on Bondi Beach. Un-Australian behaviour.",
+        "author": "Liam B.",
+        "date": "2024-09-18",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-003-2",
+        "text": "Ordered a McChicken. Got something that legally qualifies as poultry-adjacent. Even the ibis outside wouldn't touch it.",
+        "author": "Chloe M.",
+        "date": "2025-01-08",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-003-3",
+        "text": "Air con so cold my burger shivered. Fair enough — I'd shiver too if I knew what was coming.",
+        "author": "Google User",
+        "date": "2024-05-11",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-003-4",
+        "text": "Paid extra for bacon. Received one lonely strip hiding under the patty like it was in witness protection.",
+        "author": "Trent A.",
+        "date": "2024-11-27",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/sydney-cbd.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-004",
+    "slug": "toronto-eaton-centre",
+    "name": "McDonald's Toronto Eaton Centre",
+    "city": "Toronto",
+    "country": "Canada",
+    "flag": "🇨🇦",
+    "overallRating": 3,
+    "totalReviews": 4120,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Toronto+Eaton+Centre",
+    "reviews": [
+      {
+        "id": "r-004-1",
+        "text": "Sorry isn't enough, eh? My poutine was just fries with attitude and a drizzle of disappointment.",
+        "author": "Noah C.",
+        "date": "2024-10-22",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-004-2",
+        "text": "Maple something season and they still couldn't sweeten this experience. Coffee tasted like it survived two winters.",
+        "author": "Sophie L.",
+        "date": "2025-03-02",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-004-3",
+        "text": "The self-order kiosk judged me. Then gave me the wrong order. Technology and humanity, united in failure.",
+        "author": "Ryan P.",
+        "date": "2024-08-07",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-004-4",
+        "text": "Bathroom cleaner than the food prep area, which sounds nice until you think about it for more than two seconds.",
+        "author": "Google User",
+        "date": "2024-12-19",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/toronto-eaton-centre.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-005",
+    "slug": "dublin-grafton-street",
+    "name": "McDonald's Grafton Street",
+    "city": "Dublin",
+    "country": "Ireland",
+    "flag": "🇮🇪",
+    "overallRating": 3.2,
+    "totalReviews": 2780,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Grafton+Street+Dublin",
+    "reviews": [
+      {
+        "id": "r-005-1",
+        "text": "Grand soft day for a burger, they said. What I got was neither grand nor soft. Jaysus.",
+        "author": "Conor F.",
+        "date": "2024-09-03",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-005-2",
+        "text": "The chips were so soggy they could've been used to patch a roof. Dublin rain has nothing on these.",
+        "author": "Aoife N.",
+        "date": "2025-01-25",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-005-3",
+        "text": "Asked for a shamrock shake. Got green hope and white lies. Machine broken, naturally.",
+        "author": "Sean O.",
+        "date": "2024-03-17",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-005-4",
+        "text": "Céad míle failte to the worst €14 I've spent this week. The seagulls on O'Connell would do better.",
+        "author": "Google User",
+        "date": "2024-11-11",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/dublin-grafton-street.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-006",
+    "slug": "auckland-queen-street",
+    "name": "McDonald's Queen Street",
+    "city": "Auckland",
+    "country": "New Zealand",
+    "flag": "🇳🇿",
+    "overallRating": 3.1,
+    "totalReviews": 1950,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Queen+Street+Auckland",
+    "reviews": [
+      {
+        "id": "r-006-1",
+        "text": "Sweet as? Nah. Sour as. Burger so dry it could be exported as desiccant.",
+        "author": "Harper W.",
+        "date": "2024-10-30",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-006-2",
+        "text": "Kiwi ingenuity couldn't save this order. Nuggets shaped like they'd been dropped from the Sky Tower.",
+        "author": "Jack T.",
+        "date": "2025-02-08",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-006-3",
+        "text": "The staff were lovely. The food was a crime against lamb-loving nations.",
+        "author": "Mia R.",
+        "date": "2024-07-14",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-006-4",
+        "text": "McFlurry machine down. At this point it's less a machine and more a national myth.",
+        "author": "Google User",
+        "date": "2024-12-05",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/auckland-queen-street.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-007",
+    "slug": "singapore-orchard-road",
+    "name": "McDonald's Orchard Road",
+    "city": "Singapore",
+    "country": "Singapore",
+    "flag": "🇸🇬",
+    "overallRating": 3.4,
+    "totalReviews": 3340,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Orchard+Road+Singapore",
+    "reviews": [
+      {
+        "id": "r-007-1",
+        "text": "This city fines you for chewing gum but not for serving this burger. Unfair.",
+        "author": "Wei L.",
+        "date": "2024-08-28",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-007-2",
+        "text": "Ordered spicy nuggets. Received nuggets that had seen a picture of spice once. Very shy.",
+        "author": "Aisha K.",
+        "date": "2025-01-17",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-007-3",
+        "text": "Air-conditioned to Arctic levels. My fries went from crispy to fossil in four minutes.",
+        "author": "Daniel T.",
+        "date": "2024-11-20",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-007-4",
+        "text": "Queue discipline was perfect. Food quality was the opposite of perfect. Efficient disappointment.",
+        "author": "Google User",
+        "date": "2024-06-09",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/singapore-orchard-road.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-008",
+    "slug": "chicago-loop",
+    "name": "McDonald's Chicago Loop",
+    "city": "Chicago",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "overallRating": 2.8,
+    "totalReviews": 4670,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Chicago+Loop",
+    "reviews": [
+      {
+        "id": "r-008-1",
+        "text": "Deep dish pizza city and THIS is what I chose. I deserve this review and this stomach ache.",
+        "author": "Carlos M.",
+        "date": "2024-09-25",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-008-2",
+        "text": "Windy City? More like Whiny Customer. Because I waited 25 minutes for a Filet-O-Fish that tasted like Lake Michigan.",
+        "author": "Brittany J.",
+        "date": "2025-02-02",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-008-3",
+        "text": "The hash browns had the structural integrity of a Chicago pothole. Familiar, but not in a good way.",
+        "author": "Google User",
+        "date": "2024-12-28",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-008-4",
+        "text": "Said 'extra pickles' like a fool. Received a cucumber funeral on a bun.",
+        "author": "Tyler G.",
+        "date": "2024-05-03",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/chicago-loop.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-009",
+    "slug": "las-vegas-strip",
+    "name": "McDonald's Las Vegas Strip",
+    "city": "Las Vegas",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "overallRating": 2.7,
+    "totalReviews": 6120,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Las+Vegas+Strip",
+    "reviews": [
+      {
+        "id": "r-009-1",
+        "text": "Lost $400 at blackjack, then lost another $22 here. The house always wins, and so does the special sauce of sadness.",
+        "author": "Vince P.",
+        "date": "2024-10-12",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-009-2",
+        "text": "Only place in Vegas where the odds are worse than the slots. At least the slot machine didn't give me cold fries.",
+        "author": "Nina S.",
+        "date": "2025-01-03",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-009-3",
+        "text": "What happens in Vegas stays in Vegas. Except this burger. It stayed with me. All night.",
+        "author": "Google User",
+        "date": "2024-08-15",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-009-4",
+        "text": "Neon lights outside, beige despair inside. Perfect Vegas metaphor.",
+        "author": "Rick D.",
+        "date": "2024-11-29",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/las-vegas-strip.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-010",
+    "slug": "edinburgh-royal-mile",
+    "name": "McDonald's Royal Mile",
+    "city": "Edinburgh",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "overallRating": 3,
+    "totalReviews": 2410,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Royal+Mile+Edinburgh",
+    "reviews": [
+      {
+        "id": "r-010-1",
+        "text": "Historic city. Historic levels of salt on these fries. Scotland's heart couldn't save this meal.",
+        "author": "Fiona M.",
+        "date": "2024-09-07",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-010-2",
+        "text": "Bagpipes played outside. Inside, my soul played a sad tune. The haggis nearby smelled like Michelin stars compared to this.",
+        "author": "Angus B.",
+        "date": "2025-02-20",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-010-3",
+        "text": "Rain, wind, and a burger that tasted like it was aged in a castle dungeon. Too authentic.",
+        "author": "Google User",
+        "date": "2024-12-11",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-010-4",
+        "text": "Ate here before the Fringe show. The comedy was free; this meal was the punchline.",
+        "author": "Eilidh C.",
+        "date": "2024-08-02",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/edinburgh-royal-mile.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-011",
+    "slug": "melbourne-federation-square",
+    "name": "McDonald's Federation Square",
+    "city": "Melbourne",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "overallRating": 3.2,
+    "totalReviews": 3560,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Federation+Square+Melbourne",
+    "reviews": [
+      {
+        "id": "r-011-1",
+        "text": "Melbourne is a coffee city. This place serves brown water and calls it coffee. Cultural vandalism.",
+        "author": "Zoe H.",
+        "date": "2024-10-18",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-011-2",
+        "text": "The burger was so hipster it refused to be good ironically.",
+        "author": "Oscar F.",
+        "date": "2025-01-29",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-011-3",
+        "text": "Tram bells dinged cheerfully outside. Inside, my appetite died quietly.",
+        "author": "Google User",
+        "date": "2024-07-21",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-011-4",
+        "text": "Four dollar coffee in Melbourne? Should've been illegal. Tasted like it was.",
+        "author": "Isla P.",
+        "date": "2024-11-05",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/melbourne-federation-square.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-012",
+    "slug": "vancouver-gastown",
+    "name": "McDonald's Gastown",
+    "city": "Vancouver",
+    "country": "Canada",
+    "flag": "🇨🇦",
+    "overallRating": 3.1,
+    "totalReviews": 2890,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Gastown+Vancouver",
+    "reviews": [
+      {
+        "id": "r-012-1",
+        "text": "Mountains outside, rock bottom inside. The steamed bun had less elevation than Stanley Park.",
+        "author": "Ethan W.",
+        "date": "2024-09-14",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-012-2",
+        "text": "Rain city, pain city. Nuggets colder than a Vancouver winter morning.",
+        "author": "Maya S.",
+        "date": "2025-02-11",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-012-3",
+        "text": "Organic everything next door. I chose chaos. Chaos chose back.",
+        "author": "Google User",
+        "date": "2024-12-03",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-012-4",
+        "text": "Nice staff. Burger looked like it had already been composted at the farmers market down the street.",
+        "author": "Lucas B.",
+        "date": "2024-06-26",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/vancouver-gastown.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-013",
+    "slug": "boston-downtown",
+    "name": "McDonald's Boston Downtown",
+    "city": "Boston",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "overallRating": 2.9,
+    "totalReviews": 3780,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Boston+Downtown",
+    "reviews": [
+      {
+        "id": "r-013-1",
+        "text": "Wicked bad. And I don't use 'wicked' lightly. This was a lobster roll's evil twin.",
+        "author": "Patricia O.",
+        "date": "2024-10-08",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-013-2",
+        "text": "Freedom Trail nearby. My digestive freedom ended here.",
+        "author": "Mike K.",
+        "date": "2025-01-15",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-013-3",
+        "text": "Accent so thick I couldn't understand the order number. Food so thin I couldn't understand the patty.",
+        "author": "Google User",
+        "date": "2024-08-30",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-013-4",
+        "text": "Harvard grads wouldn't touch this. I have a community college palate and even I felt insulted.",
+        "author": "Janet R.",
+        "date": "2024-11-23",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/boston-downtown.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-014",
+    "slug": "manchester-piccadilly",
+    "name": "McDonald's Piccadilly Gardens",
+    "city": "Manchester",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "overallRating": 2.8,
+    "totalReviews": 3120,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Piccadilly+Gardens+Manchester",
+    "reviews": [
+      {
+        "id": "r-014-1",
+        "text": "Proper grim. Chips had the texture of a wet Manchester Monday.",
+        "author": "Callum D.",
+        "date": "2024-09-30",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-014-2",
+        "text": "Mad for it? Mad I came here, yeah.",
+        "author": "Aimee L.",
+        "date": "2025-02-05",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-014-3",
+        "text": "The burger was thinner than Oasis reunion rumours.",
+        "author": "Google User",
+        "date": "2024-12-15",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-014-4",
+        "text": "Rain, pigeons, and a McChicken that tasted like it lost a fight with both.",
+        "author": "Josh W.",
+        "date": "2024-07-08",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/manchester-piccadilly.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-015",
+    "slug": "brisbane-queen-street",
+    "name": "McDonald's Queen Street Mall",
+    "city": "Brisbane",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "overallRating": 3.3,
+    "totalReviews": 2240,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Queen+Street+Mall+Brisbane",
+    "reviews": [
+      {
+        "id": "r-015-1",
+        "text": "Sunshine State, shady burger. My Queensland holiday took a dark turn.",
+        "author": "Ruby C.",
+        "date": "2024-10-25",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-015-2",
+        "text": "Cane toad would hop away from these nuggets. And those things eat anything.",
+        "author": "Ben A.",
+        "date": "2025-01-10",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-015-3",
+        "text": "Humid outside, stale inside. Full sensory disappointment.",
+        "author": "Google User",
+        "date": "2024-08-18",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-015-4",
+        "text": "Mall was buzzing. My taste buds went on strike.",
+        "author": "Grace T.",
+        "date": "2024-11-30",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/brisbane-queen-street.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-016",
+    "slug": "glasgow-sauchiehall",
+    "name": "McDonald's Sauchiehall Street",
+    "city": "Glasgow",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "overallRating": 2.7,
+    "totalReviews": 2680,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Sauchiehall+Street+Glasgow",
+    "reviews": [
+      {
+        "id": "r-016-1",
+        "text": "Pure mince. And I don't mean the good Scottish kind.",
+        "author": "Hamish G.",
+        "date": "2024-09-12",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-016-2",
+        "text": "The patty was that flat it could've been ironed by my granny. She'd be ashamed.",
+        "author": "Morag S.",
+        "date": "2025-02-18",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-016-3",
+        "text": "Deep fried Mars bar city and I picked THIS. Self-respect: battered.",
+        "author": "Google User",
+        "date": "2024-12-22",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-016-4",
+        "text": "Cheerful Glaswegian banter at the counter. Food that could start a riot.",
+        "author": "Fraser M.",
+        "date": "2024-06-17",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/glasgow-sauchiehall.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-017",
+    "slug": "perth-hay-street",
+    "name": "McDonald's Hay Street Mall",
+    "city": "Perth",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "overallRating": 3.4,
+    "totalReviews": 1820,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Hay+Street+Mall+Perth",
+    "reviews": [
+      {
+        "id": "r-017-1",
+        "text": "Most isolated city on earth and somehow still imported disappointment.",
+        "author": "Ella N.",
+        "date": "2024-10-03",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-017-2",
+        "text": "Mining town prices, mining town regret. Gold rush? More like fool's gold.",
+        "author": "Cooper J.",
+        "date": "2025-01-22",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-017-3",
+        "text": "Sunny Perth weather couldn't warm these fries. Scientific breakthrough.",
+        "author": "Google User",
+        "date": "2024-08-11",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-017-4",
+        "text": "Swan River flows gracefully nearby. My appetite flowed away.",
+        "author": "Hannah V.",
+        "date": "2024-11-16",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/perth-hay-street.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-018",
+    "slug": "calgary-stephen-ave",
+    "name": "McDonald's Stephen Avenue",
+    "city": "Calgary",
+    "country": "Canada",
+    "flag": "🇨🇦",
+    "overallRating": 3,
+    "totalReviews": 2150,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Stephen+Avenue+Calgary",
+    "reviews": [
+      {
+        "id": "r-018-1",
+        "text": "Stampede city deserves better. This burger couldn't ride a mechanical bull.",
+        "author": "Logan H.",
+        "date": "2024-09-20",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-018-2",
+        "text": "Cold outside, colder nuggets. Alberta beef nearby, mystery meat here.",
+        "author": "Olivia K.",
+        "date": "2025-02-25",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-018-3",
+        "text": "Mountain views, valley-level food quality.",
+        "author": "Google User",
+        "date": "2024-12-08",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-018-4",
+        "text": "Coffee weaker than Calgary's plus-fifteen wind chill.",
+        "author": "Nathan B.",
+        "date": "2024-07-04",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/calgary-stephen-ave.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-019",
+    "slug": "philadelphia-center-city",
+    "name": "McDonald's Center City",
+    "city": "Philadelphia",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "overallRating": 2.8,
+    "totalReviews": 3450,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Center+City+Philadelphia",
+    "reviews": [
+      {
+        "id": "r-019-1",
+        "text": "City of Brotherly Love except this cheeseburger hated me personally.",
+        "author": "Tony R.",
+        "date": "2024-10-15",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-019-2",
+        "text": "Philly cheesesteak down the block. I chose violence against my own palate.",
+        "author": "Maria G.",
+        "date": "2025-01-07",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-019-3",
+        "text": "Rocky ran up steps. I ran to the bathroom. Different kind of training montage.",
+        "author": "Google User",
+        "date": "2024-08-24",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-019-4",
+        "text": "Liberty Bell rang for freedom. My stomach rang for mercy.",
+        "author": "Steve L.",
+        "date": "2024-11-08",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/philadelphia-center-city.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-020",
+    "slug": "cork-patrick-street",
+    "name": "McDonald's Patrick Street",
+    "city": "Cork",
+    "country": "Ireland",
+    "flag": "🇮🇪",
+    "overallRating": 3.1,
+    "totalReviews": 1640,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Patrick+Street+Cork",
+    "reviews": [
+      {
+        "id": "r-020-1",
+        "text": "Rebel city and I rebelled against finishing this meal. Couldn't do it.",
+        "author": "Ciara B.",
+        "date": "2024-09-28",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-020-2",
+        "text": "Lovely Cork accent on the server. Food accent was 'bleh' in every language.",
+        "author": "Darragh O.",
+        "date": "2025-02-12",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-020-3",
+        "text": "English Market sells fresh fish. I ate something that would scare the fish.",
+        "author": "Google User",
+        "date": "2024-12-01",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-020-4",
+        "text": "Grand soft day turned hard fast. Like these fries.",
+        "author": "Niamh F.",
+        "date": "2024-06-30",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/cork-patrick-street.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-021",
+    "slug": "wellington-lambton-quay",
+    "name": "McDonald's Lambton Quay",
+    "city": "Wellington",
+    "country": "New Zealand",
+    "flag": "🇳🇿",
+    "overallRating": 3.2,
+    "totalReviews": 1780,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Lambton+Quay+Wellington",
+    "reviews": [
+      {
+        "id": "r-021-1",
+        "text": "Windy Wellington blew my napkin away and my will to eat with it.",
+        "author": "Charlotte A.",
+        "date": "2024-10-07",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-021-2",
+        "text": "Capital city, lowercase meal. Parliament debates better policies than this kitchen follows.",
+        "author": "George M.",
+        "date": "2025-01-31",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-021-3",
+        "text": "Flat white heaven everywhere. Then I came here. Flat everything.",
+        "author": "Google User",
+        "date": "2024-08-05",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-021-4",
+        "text": "Lord of the Rings filmed nearby. This burger was the real fantasy — pretending to be food.",
+        "author": "Sophie D.",
+        "date": "2024-11-19",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/wellington-lambton-quay.jpg"
+      }
+    ]
+  },
+  {
+    "id": "mcd-022",
+    "slug": "adelaide-rundle-mall",
+    "name": "McDonald's Rundle Mall",
+    "city": "Adelaide",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "overallRating": 3.3,
+    "totalReviews": 1920,
+    "googleMapsUrl": "https://maps.google.com/?q=McDonald%27s+Rundle+Mall+Adelaide",
+    "reviews": [
+      {
+        "id": "r-022-1",
+        "text": "Festival city, famine-quality burger. The bronze pigs in the mall looked better fed.",
+        "author": "William C.",
+        "date": "2024-09-16",
+        "rating": 1,
+        "funnyRank": 1
+      },
+      {
+        "id": "r-022-2",
+        "text": "Wine country surrounds us. This meal paired best with regret.",
+        "author": "Amelia R.",
+        "date": "2025-02-22",
+        "rating": 1,
+        "funnyRank": 2
+      },
+      {
+        "id": "r-022-3",
+        "text": "Quiet city, loud stomach complaints afterward.",
+        "author": "Google User",
+        "date": "2024-12-18",
+        "rating": 1,
+        "funnyRank": 3
+      },
+      {
+        "id": "r-022-4",
+        "text": "Ordered a McFeast. Received a McLeast.",
+        "author": "Henry K.",
+        "date": "2024-07-27",
+        "rating": 1,
+        "funnyRank": 4,
+        "imageUrl": "/restaurants/adelaide-rundle-mall.jpg"
+      }
+    ]
+  }
+]
