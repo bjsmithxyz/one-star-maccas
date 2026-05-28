@@ -6,6 +6,12 @@ Live site: https://bjsmithxyz.github.io/one-star-maccas/
 
 **Maintainers:** see [docs/OPERATIONS.md](docs/OPERATIONS.md) for how to add locations, ingest reviews, and deploy.
 
+## License
+
+Site code is released under the [MIT License](LICENSE).
+
+Review text and photos remain the property of their respective authors and Google. This project curates and links to publicly available content for commentary and entertainment only. Not affiliated with McDonald's Corporation.
+
 ## Stack
 
 - Vite + React + TypeScript + Tailwind

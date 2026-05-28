@@ -43,11 +43,10 @@ export function HomePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
-        <div className="mb-6 flex items-end justify-between gap-4">
+        <div className="mb-6">
           <h2 className="font-display text-2xl text-mcd-charcoal sm:text-3xl">
             Hall of Fame
           </h2>
-          <p className="text-sm text-mcd-charcoal/60">Tap location to visit the restaurant</p>
         </div>
 
         {featured.length > 0 ? (
