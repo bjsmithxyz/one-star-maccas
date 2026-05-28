@@ -68,9 +68,17 @@ for (const file of srcFiles) {
   }
 
   const envMatches = contents.match(/import\.meta\.env\.([A-Z0-9_]+)/g) ?? []
+  const allowedClientEnv = new Set([
+    'BASE_URL',
+    'DEV',
+    'PROD',
+    'MODE',
+    'VITE_SUPABASE_URL',
+    'VITE_SUPABASE_ANON_KEY',
+  ])
   for (const match of envMatches) {
     const key = match.split('.').pop()
-    if (key !== 'BASE_URL' && key !== 'DEV' && key !== 'PROD' && key !== 'MODE') {
+    if (key && !allowedClientEnv.has(key)) {
       fail(`${relative} reads import.meta.env.${key} — secrets must not reach the client bundle`)
     }
   }

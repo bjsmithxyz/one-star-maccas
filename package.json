@@ -16,6 +16,7 @@
     "security:check": "node scripts/security-check.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.2",
     "leaflet": "^1.9.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",

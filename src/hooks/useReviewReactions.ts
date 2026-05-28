@@ -1,101 +1,130 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   ALL_REACTION_IDS,
   type ReactionId,
 } from '../constants/reactions'
+import {
+  fetchReviewReactions,
+  getSupabaseClient,
+  isSupabaseConfigured,
+  toggleReviewReaction,
+} from '../lib/supabase'
 
-type ReviewReactionData = {
-  added: Partial<Record<ReactionId, number>>
-  mine: ReactionId[]
-}
-
-type ReactionStore = Record<string, ReviewReactionData>
-
-const REACTIONS_KEY = '1-star-maccas-reactions-v4'
-
-function readStore(): ReactionStore {
-  try {
-    const raw = localStorage.getItem(REACTIONS_KEY)
-    const parsed = raw ? (JSON.parse(raw) as ReactionStore) : {}
-
-    for (const [reviewId, data] of Object.entries(parsed)) {
-      if (!Array.isArray(data.mine)) {
-        parsed[reviewId] = normalizeReactionData(data)
-      }
-    }
-
-    return parsed
-  } catch {
-    return {}
-  }
-}
-
-function normalizeReactionData(data: Partial<ReviewReactionData>): ReviewReactionData {
-  const mine = Array.isArray(data.mine)
-    ? data.mine.filter((id): id is ReactionId =>
-        ALL_REACTION_IDS.includes(id as ReactionId),
-      )
-    : []
-
-  const added = { ...(data.added ?? {}) }
-  for (const id of mine) {
-    if ((added[id] ?? 0) < 1) {
-      added[id] = 1
-    }
-  }
-
-  return { added, mine }
-}
-
-function writeStore(value: ReactionStore) {
-  localStorage.setItem(REACTIONS_KEY, JSON.stringify(value))
-}
-
-function emptyReactionData(): ReviewReactionData {
-  return { added: {}, mine: [] }
-}
-
-function buildCounts(data: ReviewReactionData) {
+function emptyCounts(): Record<ReactionId, number> {
   return Object.fromEntries(
-    ALL_REACTION_IDS.map((id) => [id, data.added[id] ?? 0]),
+    ALL_REACTION_IDS.map((id) => [id, 0]),
   ) as Record<ReactionId, number>
 }
 
-export function useReviewReactions(reviewId: string) {
-  const [counts, setCounts] = useState<Record<ReactionId, number>>(() =>
-    buildCounts(emptyReactionData()),
+function buildCounts(counts: Record<string, number>): Record<ReactionId, number> {
+  const next = emptyCounts()
+  for (const id of ALL_REACTION_IDS) {
+    next[id] = counts[id] ?? 0
+  }
+  return next
+}
+
+function buildMine(mine: string[]): ReactionId[] {
+  return mine.filter((id): id is ReactionId =>
+    ALL_REACTION_IDS.includes(id as ReactionId),
   )
+}
+
+export function useReviewReactions(reviewId: string) {
+  const [counts, setCounts] = useState<Record<ReactionId, number>>(emptyCounts)
   const [myReactions, setMyReactions] = useState<ReactionId[]>([])
+  const [isLoading, setIsLoading] = useState(isSupabaseConfigured())
+  const [isSyncing, setIsSyncing] = useState(false)
 
-  useEffect(() => {
-    const stored = readStore()
-    const data = normalizeReactionData(stored[reviewId] ?? emptyReactionData())
+  const applyPayload = useCallback((payload: { counts: Record<string, number>; mine: string[] }) => {
+    setCounts(buildCounts(payload.counts))
+    setMyReactions(buildMine(payload.mine))
+  }, [])
 
-    setCounts(buildCounts(data))
-    setMyReactions(data.mine)
-  }, [reviewId])
-
-  const toggleReaction = (reactionId: ReactionId) => {
-    const stored = readStore()
-    const data = normalizeReactionData(stored[reviewId] ?? emptyReactionData())
-    const hasReaction = data.mine.includes(reactionId)
-
-    if (hasReaction) {
-      data.mine = data.mine.filter((id) => id !== reactionId)
-      data.added[reactionId] = Math.max(0, (data.added[reactionId] ?? 0) - 1)
-    } else {
-      data.mine = [...data.mine, reactionId]
-      data.added[reactionId] = (data.added[reactionId] ?? 0) + 1
+  const refresh = useCallback(async () => {
+    if (!isSupabaseConfigured()) {
+      setIsLoading(false)
+      return
     }
 
-    stored[reviewId] = data
-    writeStore(stored)
+    try {
+      const payload = await fetchReviewReactions(reviewId)
+      if (payload) applyPayload(payload)
+    } catch (error) {
+      console.error('Failed to load reactions', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [applyPayload, reviewId])
 
-    setCounts(buildCounts(data))
-    setMyReactions([...data.mine])
+  useEffect(() => {
+    setIsLoading(isSupabaseConfigured())
+    void refresh()
+  }, [refresh])
+
+  useEffect(() => {
+    const supabase = getSupabaseClient()
+    if (!supabase) return
+
+    const channel = supabase
+      .channel(`reactions:${reviewId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'reaction_votes',
+          filter: `review_id=eq.${reviewId}`,
+        },
+        () => {
+          void refresh()
+        },
+      )
+      .subscribe()
+
+    return () => {
+      void supabase.removeChannel(channel)
+    }
+  }, [refresh, reviewId])
+
+  const toggleReaction = async (reactionId: ReactionId) => {
+    if (!isSupabaseConfigured()) return
+
+    const previousCounts = counts
+    const previousMine = myReactions
+    const hasReaction = myReactions.includes(reactionId)
+
+    setIsSyncing(true)
+    setMyReactions(
+      hasReaction
+        ? myReactions.filter((id) => id !== reactionId)
+        : [...myReactions, reactionId],
+    )
+    setCounts({
+      ...counts,
+      [reactionId]: Math.max(0, counts[reactionId] + (hasReaction ? -1 : 1)),
+    })
+
+    try {
+      const payload = await toggleReviewReaction(reviewId, reactionId)
+      if (payload) applyPayload(payload)
+    } catch (error) {
+      console.error('Failed to toggle reaction', error)
+      setCounts(previousCounts)
+      setMyReactions(previousMine)
+    } finally {
+      setIsSyncing(false)
+    }
   }
 
-  return { counts, myReactions, toggleReaction }
+  return {
+    counts,
+    myReactions,
+    toggleReaction,
+    isLoading,
+    isSyncing,
+    isOnline: isSupabaseConfigured(),
+  }
 }
 
 export { PRIMARY_REACTIONS, EXTRA_EMOJI_REACTIONS } from '../constants/reactions'

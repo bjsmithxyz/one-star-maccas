@@ -17,12 +17,14 @@ function ReactionButton({
   label,
   count,
   isActive,
+  disabled,
   onToggle,
 }: {
   id: ReactionId
   label: string
   count: number
   isActive: boolean
+  disabled?: boolean
   onToggle: () => void
 }) {
   return (
@@ -31,6 +33,7 @@ function ReactionButton({
       title={label}
       aria-label={`${label}, ${count} reactions`}
       aria-pressed={isActive}
+      disabled={disabled}
       onClick={onToggle}
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-sm font-medium transition ${
         isActive
@@ -45,7 +48,8 @@ function ReactionButton({
 }
 
 export function ReviewReactions({ reviewId }: ReviewReactionsProps) {
-  const { counts, myReactions, toggleReaction } = useReviewReactions(reviewId)
+  const { counts, myReactions, toggleReaction, isLoading, isSyncing, isOnline } =
+    useReviewReactions(reviewId)
   const [pickerOpen, setPickerOpen] = useState(false)
   const pickerRef = useRef<HTMLDivElement>(null)
 
@@ -67,7 +71,7 @@ export function ReviewReactions({ reviewId }: ReviewReactionsProps) {
   }, [pickerOpen])
 
   const handleToggle = (id: ReactionId) => {
-    toggleReaction(id)
+    void toggleReaction(id)
     if (isEmojiReaction(id)) {
       setPickerOpen(false)
     }
@@ -75,10 +79,17 @@ export function ReviewReactions({ reviewId }: ReviewReactionsProps) {
 
   return (
     <div
-      className="relative mt-4 flex flex-wrap gap-2"
+      className={`relative mt-4 flex flex-wrap gap-2 ${isSyncing ? 'opacity-80' : ''}`}
       role="group"
       aria-label="React to this review"
+      aria-busy={isLoading || isSyncing}
     >
+      {!isOnline && (
+        <p className="w-full text-xs text-mcd-charcoal/50">
+          Reactions unavailable — Supabase not configured.
+        </p>
+      )}
+
       {PRIMARY_REACTIONS.map(({ id, label }) => (
         <ReactionButton
           key={id}
@@ -86,6 +97,7 @@ export function ReviewReactions({ reviewId }: ReviewReactionsProps) {
           label={label}
           count={counts[id]}
           isActive={myReactions.includes(id)}
+          disabled={!isOnline || isLoading || isSyncing}
           onToggle={() => handleToggle(id)}
         />
       ))}
@@ -97,6 +109,7 @@ export function ReviewReactions({ reviewId }: ReviewReactionsProps) {
           label={label}
           count={counts[id]}
           isActive={myReactions.includes(id)}
+          disabled={!isOnline || isLoading || isSyncing}
           onToggle={() => handleToggle(id)}
         />
       ))}
@@ -107,6 +120,7 @@ export function ReviewReactions({ reviewId }: ReviewReactionsProps) {
           title="More reactions"
           aria-label="More reactions"
           aria-expanded={pickerOpen}
+          disabled={!isOnline || isLoading || isSyncing}
           onClick={() => setPickerOpen((open) => !open)}
           className={`inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full border text-lg font-semibold leading-none transition ${
             pickerOpen

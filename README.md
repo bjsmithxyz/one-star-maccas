@@ -90,7 +90,24 @@ Hero line (e.g. `22 restaurants · 269 reviews · view map`) comes from `getSite
 
 ## Reactions
 
-Discord-style reaction bar on each review: clown emojis + 😂, with a **+** picker for standard emojis. Counts are stored in the visitor's browser (`localStorage` only) — no server, no seeded counts.
+Discord-style reaction bar on each review: clown emojis + 😂, with a **+** picker for standard emojis. Counts are **shared globally** via [Supabase](https://supabase.com/) when configured.
+
+### Supabase setup
+
+1. Open your project SQL editor and run [`supabase/migrations/20260527120000_reactions.sql`](supabase/migrations/20260527120000_reactions.sql)
+2. Copy the **anon/public** key from Project Settings → API
+3. Add to `.env`:
+
+```bash
+VITE_SUPABASE_URL=https://owlnefkggethwxxniwyk.supabase.co
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+```
+
+4. For GitHub Pages, add the same values as repository secrets:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+
+Each browser gets a random `voter_id` in `localStorage` so you can toggle reactions without signing in. Counts update live for all visitors via Supabase Realtime.
 
 ## Add reviews manually
 
@@ -133,7 +150,7 @@ This is a **static site** with no backend. Attack surface is small, but keep the
   - Images → `/photos/*` paths or `https://*.googleusercontent.com`
   - Route slugs → `[a-z0-9-]` only
 - `index.html` sets CSP, `Referrer-Policy`, and `X-Content-Type-Options`.
-- Reaction data stays in `localStorage` on the client; nothing sensitive is stored.
+- Reaction votes are stored in Supabase; the anon key is public by design with RPC-only writes.
 
 Run automated checks locally:
 
