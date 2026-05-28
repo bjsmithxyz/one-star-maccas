@@ -4,6 +4,8 @@ The worst 1-star Google reviews from McDonald's around the world.
 
 Live site: https://bjsmithxyz.github.io/one-star-maccas/
 
+**Maintainers:** see [docs/OPERATIONS.md](docs/OPERATIONS.md) for how to add locations, ingest reviews, and deploy.
+
 ## Stack
 
 - Vite + React + TypeScript + Tailwind

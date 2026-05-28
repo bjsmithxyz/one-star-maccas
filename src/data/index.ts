@@ -73,5 +73,13 @@ export function getSafeGoogleMapsUrl(
 }
 
 export function getSafeImageUrl(imageUrl: string | undefined): string {
-  return sanitizeImageUrl(imageUrl)
+  const sanitized = sanitizeImageUrl(imageUrl)
+  if (!sanitized) return ''
+
+  if (sanitized.startsWith('/photos/')) {
+    const base = import.meta.env.BASE_URL
+    return `${base}${sanitized.slice(1)}`
+  }
+
+  return sanitized
 }
