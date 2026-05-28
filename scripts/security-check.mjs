@@ -84,6 +84,26 @@ for (const file of srcFiles) {
   }
 }
 
+const safeExternalLink = read('src/components/SafeExternalLink.tsx')
+if (!safeExternalLink.includes('sanitizeExternalUrl')) {
+  fail('SafeExternalLink must sanitize href via sanitizeExternalUrl')
+}
+
+const securityMigration = read(
+  'supabase/migrations/20260528120000_reactions_security.sql',
+)
+if (!securityMigration.includes('drop policy if exists "reaction_votes_public_read"')) {
+  fail('Missing reactions security migration that drops public read policy')
+}
+if (!securityMigration.includes('revoke all on table public.reaction_votes')) {
+  fail('Missing reactions security migration that revokes direct table access')
+}
+
+const downloadImageLib = read('scripts/lib/download-image.mjs')
+if (!downloadImageLib.includes('assertSafeImageUrl')) {
+  fail('scripts/lib/download-image.mjs must validate image URLs before fetch')
+}
+
 if (!read('index.html').includes('Content-Security-Policy')) {
   fail('index.html is missing a Content-Security-Policy meta tag')
 }

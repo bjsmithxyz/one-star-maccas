@@ -94,20 +94,24 @@ Discord-style reaction bar on each review: clown emojis + 😂, with a **+** pic
 
 ### Supabase setup
 
-1. Open your project SQL editor and run [`supabase/migrations/20260527120000_reactions.sql`](supabase/migrations/20260527120000_reactions.sql)
+1. Open your project SQL editor and run both migrations in order:
+   - [`supabase/migrations/20260527120000_reactions.sql`](supabase/migrations/20260527120000_reactions.sql)
+   - [`supabase/migrations/20260528120000_reactions_security.sql`](supabase/migrations/20260528120000_reactions_security.sql)
 2. Copy the **anon/public** key from Project Settings → API
 3. Add to `.env`:
 
 ```bash
-VITE_SUPABASE_URL=https://owlnefkggethwxxniwyk.supabase.co
+VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 ```
 
-4. For GitHub Pages, add the same values as repository secrets:
+4. For GitHub Pages, add the same values as **environment secrets** on the `github-pages` environment:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
 
-Each browser gets a random `voter_id` in `localStorage` so you can toggle reactions without signing in. Counts update live for all visitors via Supabase Realtime.
+Each browser gets a random UUID in `localStorage` so you can toggle reactions without signing in. Counts refresh every ~45 seconds (and on tab focus) for all visitors. Direct table access is revoked — reads and writes go through RPC functions only.
+
+**Known limitation:** without user sign-in, a determined actor could still stuff votes with random voter IDs. The security migration prevents enumerating other voters' IDs and reading raw vote rows.
 
 ## Add reviews manually
 
@@ -143,14 +147,14 @@ This is a **static site** with no backend. Attack surface is small, but keep the
 ### Frontend
 
 - Review text is rendered as React text nodes (auto-escaped) — no `dangerouslySetInnerHTML`.
-- External links use `SafeExternalLink` with `rel="noopener noreferrer"` and `referrerPolicy="no-referrer"`.
-- URLs are validated in `src/lib/security.ts`:
-  - Review links → Google domains only
-  - Google Maps links → Google domains only
+- External links use `SafeExternalLink`, which validates HTTPS Google URLs internally and sets `rel="noopener noreferrer"`.
+- URLs are validated in `src/lib/security.ts` (HTTPS-only):
+  - External links → Google domains only
   - Images → `/photos/*` paths or `https://*.googleusercontent.com`
   - Route slugs → `[a-z0-9-]` only
-- `index.html` sets CSP, `Referrer-Policy`, and `X-Content-Type-Options`.
-- Reaction votes are stored in Supabase; the anon key is public by design with RPC-only writes.
+  - Review IDs → `mcd-NNN-r-*` pattern before Supabase RPC calls
+- `index.html` sets CSP, `Referrer-Policy`, and `X-Content-Type-Options`. Production builds strip dev-only `ws://localhost` CSP entries.
+- Reaction votes are stored in Supabase; the anon key is public by design. Writes go through `toggle_review_reaction` RPC only — no direct table access for anon users.
 
 Run automated checks locally:
 
@@ -162,8 +166,8 @@ npm run security:check
 
 - GitHub Actions runs `npm run security:check` before every build.
 - Workflow uses minimal permissions (`contents: read`, `pages: write`).
-- Build runs `npm run build` with no secrets — deploy artifact is static HTML/JS/CSS.
-- Ingest scripts redact API keys from error output.
+- Build injects `VITE_SUPABASE_*` from the `github-pages` environment secrets (anon key is public in the bundle by design).
+- Ingest scripts redact API keys from error output and allowlist remote image hosts before download.
 - Run `npm audit` periodically; address moderate+ findings.
 
 ### Data integrity

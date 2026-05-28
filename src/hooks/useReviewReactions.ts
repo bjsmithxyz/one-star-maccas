@@ -5,10 +5,11 @@ import {
 } from '../constants/reactions'
 import {
   fetchReviewReactions,
-  getSupabaseClient,
   isSupabaseConfigured,
   toggleReviewReaction,
 } from '../lib/supabase'
+
+const POLL_INTERVAL_MS = 45_000
 
 function emptyCounts(): Record<ReactionId, number> {
   return Object.fromEntries(
@@ -63,29 +64,22 @@ export function useReviewReactions(reviewId: string) {
   }, [refresh])
 
   useEffect(() => {
-    const supabase = getSupabaseClient()
-    if (!supabase) return
+    if (!isSupabaseConfigured()) return
 
-    const channel = supabase
-      .channel(`reactions:${reviewId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'reaction_votes',
-          filter: `review_id=eq.${reviewId}`,
-        },
-        () => {
-          void refresh()
-        },
-      )
-      .subscribe()
+    const poll = () => {
+      if (document.visibilityState === 'visible') {
+        void refresh()
+      }
+    }
+
+    const interval = window.setInterval(poll, POLL_INTERVAL_MS)
+    window.addEventListener('focus', poll)
 
     return () => {
-      void supabase.removeChannel(channel)
+      window.clearInterval(interval)
+      window.removeEventListener('focus', poll)
     }
-  }, [refresh, reviewId])
+  }, [refresh])
 
   const toggleReaction = async (reactionId: ReactionId) => {
     if (!isSupabaseConfigured()) return

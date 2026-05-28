@@ -18,6 +18,7 @@ import { fileURLToPath } from 'node:url'
 import { dedupeReviewsBySource, stableReviewId } from './lib/review-id.mjs'
 import { loadEnvFile } from './lib/load-env.mjs'
 import { collectSecretsFromEnv, redactSecrets } from './lib/redact-secrets.mjs'
+import { downloadImage } from './lib/download-image.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -109,22 +110,6 @@ function mergeReviews(existing, incoming) {
   return rankReviews(merged)
 }
 
-async function downloadImage(url, destPath) {
-  const response = await fetch(url, { redirect: 'follow' })
-  if (!response.ok) {
-    throw new Error(`Image download failed (${response.status})`)
-  }
-
-  const contentType = response.headers.get('content-type') ?? 'image/jpeg'
-  const extension = contentType.includes('png') ? 'png' : 'jpg'
-  const finalPath = destPath.replace(/\.(jpg|jpeg|png)$/i, `.${extension}`)
-
-  fs.mkdirSync(path.dirname(finalPath), { recursive: true })
-  fs.writeFileSync(finalPath, Buffer.from(await response.arrayBuffer()))
-
-  return finalPath
-}
-
 async function fetchOutscraperReviews(placeId) {
   const params = new URLSearchParams({
     query: placeId,
@@ -192,7 +177,7 @@ async function attachReviewPhotos(reviews, slug) {
 
     try {
       const dest = path.join(PHOTOS_DIR, slug, `${review.id}.jpg`)
-      const saved = await downloadImage(review._photoUrl, dest)
+      const saved = await downloadImage(review._photoUrl, dest, fs)
       next.imageUrl = toPublicPath(saved)
     } catch (error) {
       console.warn(`  Review photo skipped (${review.id}): ${error.message}`)
@@ -319,6 +304,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error)
+  console.error(safeMessage(error instanceof Error ? error.message : String(error)))
   process.exit(1)
 })

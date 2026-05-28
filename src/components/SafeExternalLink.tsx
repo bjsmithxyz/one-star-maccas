@@ -1,3 +1,5 @@
+import { sanitizeExternalUrl } from '../lib/security'
+
 type SafeExternalLinkProps = {
   href: string
   children: React.ReactNode
@@ -9,11 +11,12 @@ export function SafeExternalLink({
   children,
   className,
 }: SafeExternalLinkProps) {
-  if (!href) return null
+  const safeHref = sanitizeExternalUrl(href)
+  if (!safeHref) return null
 
   return (
     <a
-      href={href}
+      href={safeHref}
       target="_blank"
       rel="noopener noreferrer"
       referrerPolicy="no-referrer"

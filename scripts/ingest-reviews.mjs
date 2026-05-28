@@ -13,6 +13,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { loadEnvFile } from './lib/load-env.mjs'
 import { collectSecretsFromEnv, redactSecrets } from './lib/redact-secrets.mjs'
+import { stableReviewId } from './lib/review-id.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -229,19 +230,23 @@ function mapNewReviews(place, restaurant, placeReviewsUri) {
   return reviews
     .filter((review) => review.rating === 1)
     .filter((review) => (review.text?.text ?? '').trim().length > 0)
-    .map((review, index) => ({
-      id: `${restaurant.id}-g-${index + 1}`,
-      text: review.text.text.trim(),
-      author: review.authorAttribution?.displayName ?? 'Google User',
-      date: (review.publishTime ?? new Date().toISOString()).slice(0, 10),
-      rating: 1,
-      funnyRank: index + 1,
-      sourceUrl:
+    .map((review, index) => {
+      const sourceUrl =
         review.googleMapsUri ??
         review.authorAttribution?.uri ??
         placeReviewsUri ??
-        place.googleMapsUri,
-    }))
+        place.googleMapsUri
+
+      return {
+        id: stableReviewId(restaurant.id, sourceUrl),
+        text: review.text.text.trim(),
+        author: review.authorAttribution?.displayName ?? 'Google User',
+        date: (review.publishTime ?? new Date().toISOString()).slice(0, 10),
+        rating: 1,
+        funnyRank: index + 1,
+        sourceUrl,
+      }
+    })
     .filter((review) => Boolean(review.sourceUrl))
 }
 
@@ -251,17 +256,21 @@ function mapLegacyReviews(place, restaurant) {
   return reviews
     .filter((review) => review.rating === 1)
     .filter((review) => (review.text ?? '').trim().length > 0)
-    .map((review, index) => ({
-      id: `${restaurant.id}-g-${index + 1}`,
-      text: review.text.trim(),
-      author: review.author_name ?? 'Google User',
-      date: review.time
-        ? new Date(review.time * 1000).toISOString().slice(0, 10)
-        : new Date().toISOString().slice(0, 10),
-      rating: 1,
-      funnyRank: index + 1,
-      sourceUrl: place.url ?? review.author_url,
-    }))
+    .map((review, index) => {
+      const sourceUrl = place.url ?? review.author_url
+
+      return {
+        id: stableReviewId(restaurant.id, sourceUrl),
+        text: review.text.trim(),
+        author: review.author_name ?? 'Google User',
+        date: review.time
+          ? new Date(review.time * 1000).toISOString().slice(0, 10)
+          : new Date().toISOString().slice(0, 10),
+        rating: 1,
+        funnyRank: index + 1,
+        sourceUrl,
+      }
+    })
     .filter((review) => Boolean(review.sourceUrl))
 }
 
@@ -431,6 +440,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error)
+  console.error(safeMessage(error instanceof Error ? error.message : String(error)))
   process.exit(1)
 })

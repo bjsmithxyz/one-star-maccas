@@ -1,7 +1,12 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { isValidReviewId } from './security'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+const VOTER_ID_KEY = '1-star-maccas-voter-id'
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 export function isSupabaseConfigured(): boolean {
   return Boolean(supabaseUrl && supabaseAnonKey)
@@ -17,12 +22,16 @@ export function getSupabaseClient(): SupabaseClient | null {
   return client
 }
 
-const VOTER_ID_KEY = '1-star-maccas-voter-id'
+function isValidVoterId(value: string): boolean {
+  return UUID_PATTERN.test(value)
+}
 
 export function getVoterId(): string {
   try {
     const existing = localStorage.getItem(VOTER_ID_KEY)
-    if (existing) return existing
+    if (existing && isValidVoterId(existing)) {
+      return existing
+    }
 
     const created = crypto.randomUUID()
     localStorage.setItem(VOTER_ID_KEY, created)
@@ -40,6 +49,8 @@ export type ReactionPayload = {
 export async function fetchReviewReactions(
   reviewId: string,
 ): Promise<ReactionPayload | null> {
+  if (!isValidReviewId(reviewId)) return null
+
   const supabase = getSupabaseClient()
   if (!supabase) return null
 
@@ -57,6 +68,8 @@ export async function toggleReviewReaction(
   reviewId: string,
   reactionId: string,
 ): Promise<ReactionPayload | null> {
+  if (!isValidReviewId(reviewId)) return null
+
   const supabase = getSupabaseClient()
   if (!supabase) return null
 

@@ -1,9 +1,9 @@
 const GOOGLE_HOSTS = ['google.com', 'googleusercontent.com', 'gstatic.com']
 
-function parseHttpUrl(value: string): URL | null {
+function parseHttpsUrl(value: string): URL | null {
   try {
     const url = new URL(value)
-    if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+    if (url.protocol !== 'https:') {
       return null
     }
     return url
@@ -19,30 +19,30 @@ function isAllowedHost(hostname: string, allowedHosts: string[]): boolean {
   )
 }
 
+function isGoogleHost(hostname: string): boolean {
+  return isAllowedHost(hostname, GOOGLE_HOSTS)
+}
+
+/** HTTPS Google URLs (Maps, review links, etc.). */
 export function sanitizeGoogleUrl(value: string | undefined): string {
   if (!value) return ''
 
-  const url = parseHttpUrl(value)
-  if (!url || !isAllowedHost(url.hostname, GOOGLE_HOSTS)) {
+  const url = parseHttpsUrl(value)
+  if (!url || !isGoogleHost(url.hostname)) {
     return ''
   }
 
   return value
 }
 
+/** @deprecated Use sanitizeGoogleUrl — same rules apply to review links. */
 export function sanitizeGoogleReviewUrl(value: string | undefined): string {
-  if (!value) return ''
+  return sanitizeGoogleUrl(value)
+}
 
-  const url = parseHttpUrl(value)
-  if (!url) return ''
-
-  const host = url.hostname.toLowerCase()
-  const allowed =
-    host === 'google.com' ||
-    host.endsWith('.google.com') ||
-    host.endsWith('.googleusercontent.com')
-
-  return allowed ? value : ''
+/** Any external link rendered in the app (currently Google-only). */
+export function sanitizeExternalUrl(value: string | undefined): string {
+  return sanitizeGoogleUrl(value)
 }
 
 export function sanitizeImageUrl(value: string | undefined): string {
@@ -52,8 +52,8 @@ export function sanitizeImageUrl(value: string | undefined): string {
     return value
   }
 
-  const url = parseHttpUrl(value)
-  if (!url || url.protocol !== 'https:') {
+  const url = parseHttpsUrl(value)
+  if (!url) {
     return ''
   }
 
@@ -67,4 +67,10 @@ export function sanitizeImageUrl(value: string | undefined): string {
 export function sanitizeSlug(value: string | undefined): string {
   if (!value) return ''
   return /^[a-z0-9-]+$/.test(value) ? value : ''
+}
+
+export const REVIEW_ID_PATTERN = /^mcd-[0-9]{3}-r-[a-z0-9]+$/
+
+export function isValidReviewId(value: string): boolean {
+  return REVIEW_ID_PATTERN.test(value)
 }
