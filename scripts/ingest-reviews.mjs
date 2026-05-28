@@ -12,6 +12,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { loadEnvFile } from './lib/load-env.mjs'
+import { collectSecretsFromEnv, redactSecrets } from './lib/redact-secrets.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -26,6 +27,10 @@ const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
 const slugArg = args.find((arg) => arg.startsWith('--slug='))?.split('=')[1]
 const delayMs = Number(args.find((arg) => arg.startsWith('--delay='))?.split('=')[1] ?? 250)
+
+function safeMessage(message) {
+  return redactSecrets(String(message), collectSecretsFromEnv())
+}
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -47,7 +52,7 @@ async function placesFetch(url, options = {}) {
 
   if (!response.ok) {
     const message = body.error?.message ?? response.statusText
-    throw new Error(`Places API error (${response.status}): ${message}`)
+    throw new Error(safeMessage(`Places API error (${response.status}): ${message}`))
   }
 
   return body

@@ -1,5 +1,11 @@
 import restaurantsData from './restaurants.json'
 import type { FeaturedReview, Restaurant, SiteStats } from '../types'
+import {
+  sanitizeGoogleReviewUrl,
+  sanitizeGoogleUrl,
+  sanitizeImageUrl,
+  sanitizeSlug,
+} from '../lib/security'
 
 const restaurants = restaurantsData as Restaurant[]
 
@@ -28,7 +34,10 @@ export function getMapRestaurants(): Restaurant[] {
 }
 
 export function getRestaurantBySlug(slug: string): Restaurant | undefined {
-  return restaurants.find((restaurant) => restaurant.slug === slug)
+  const safeSlug = sanitizeSlug(slug)
+  if (!safeSlug) return undefined
+
+  return restaurants.find((restaurant) => restaurant.slug === safeSlug)
 }
 
 export function getRandomRestaurant(excludeSlug?: string): Restaurant {
@@ -54,20 +63,15 @@ export function getFeaturedReviews(limit = 12): FeaturedReview[] {
 }
 
 export function getReviewSourceUrl(review: { sourceUrl: string }): string {
-  try {
-    const url = new URL(review.sourceUrl)
-    if (url.protocol !== 'https:' && url.protocol !== 'http:') {
-      return ''
-    }
+  return sanitizeGoogleReviewUrl(review.sourceUrl)
+}
 
-    const host = url.hostname.toLowerCase()
-    const allowed =
-      host === 'google.com' ||
-      host.endsWith('.google.com') ||
-      host.endsWith('.googleusercontent.com')
+export function getSafeGoogleMapsUrl(
+  restaurant: Pick<Restaurant, 'googleMapsUrl'>,
+): string {
+  return sanitizeGoogleUrl(restaurant.googleMapsUrl)
+}
 
-    return allowed ? review.sourceUrl : ''
-  } catch {
-    return ''
-  }
+export function getSafeImageUrl(imageUrl: string | undefined): string {
+  return sanitizeImageUrl(imageUrl)
 }

@@ -17,6 +17,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { dedupeReviewsBySource, stableReviewId } from './lib/review-id.mjs'
 import { loadEnvFile } from './lib/load-env.mjs'
+import { collectSecretsFromEnv, redactSecrets } from './lib/redact-secrets.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -41,6 +42,10 @@ const quotaBudget = Number(
   args.find((arg) => arg.startsWith('--quota-budget='))?.split('=')[1] ?? 500,
 )
 const delayMs = Number(args.find((arg) => arg.startsWith('--delay='))?.split('=')[1] ?? 500)
+
+function safeMessage(message) {
+  return redactSecrets(String(message), collectSecretsFromEnv())
+}
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -138,7 +143,7 @@ async function fetchOutscraperReviews(placeId) {
 
   if (!response.ok) {
     const message = body.errorMessage ?? body.error ?? response.statusText
-    throw new Error(`Outscraper error (${response.status}): ${message}`)
+    throw new Error(safeMessage(`Outscraper error (${response.status}): ${message}`))
   }
 
   if (body.status === 'Failure') {

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ReviewReactions } from './ReviewReactions'
+import { SafeExternalLink } from './SafeExternalLink'
 import type { Review, Restaurant } from '../types'
 
 type ReviewCardProps = {
@@ -58,14 +59,12 @@ export function ReviewCard({
         )}
 
         {sourceUrl && (
-          <a
+          <SafeExternalLink
             href={sourceUrl}
-            target="_blank"
-            rel="noreferrer"
             className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-mcd-red transition hover:text-mcd-charcoal"
           >
             View live review ↗
-          </a>
+          </SafeExternalLink>
         )}
       </div>
 

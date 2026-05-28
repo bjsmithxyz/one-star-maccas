@@ -5,7 +5,8 @@ import { RandomButton } from '../components/RandomButton'
 import { RestaurantHero } from '../components/RestaurantHero'
 import { ReviewCard } from '../components/ReviewCard'
 import { SITE_NAME } from '../constants/branding'
-import { getRestaurantBySlug, getReviewSourceUrl } from '../data'
+import { getRestaurantBySlug, getReviewSourceUrl, getSafeGoogleMapsUrl } from '../data'
+import { SafeExternalLink } from '../components/SafeExternalLink'
 
 export function RestaurantPage() {
   const { slug } = useParams()
@@ -24,6 +25,7 @@ export function RestaurantPage() {
   const reviews = [...restaurant.reviews].sort(
     (a, b) => a.funnyRank - b.funnyRank,
   )
+  const googleMapsUrl = getSafeGoogleMapsUrl(restaurant)
 
   return (
     <Layout excludeSlug={restaurant.slug}>
@@ -66,15 +68,13 @@ export function RestaurantPage() {
               No curated reviews for this location yet. Check Google Maps for
               live 1-star comments.
             </p>
-            {restaurant.googleMapsUrl && (
-              <a
-                href={restaurant.googleMapsUrl}
-                target="_blank"
-                rel="noreferrer"
+            {googleMapsUrl && (
+              <SafeExternalLink
+                href={googleMapsUrl}
                 className="mt-4 inline-flex items-center gap-2 rounded-full border-2 border-mcd-charcoal/15 px-4 py-2 text-sm font-semibold text-mcd-charcoal transition hover:border-mcd-red hover:text-mcd-red"
               >
                 View on Google Maps ↗
-              </a>
+              </SafeExternalLink>
             )}
           </div>
         )}

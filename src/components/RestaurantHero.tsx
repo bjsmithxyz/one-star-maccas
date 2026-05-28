@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import type { Restaurant } from '../types'
+import { getSafeGoogleMapsUrl, getSafeImageUrl } from '../data'
 import { getRandomReviewWithImage } from '../data/hero'
+import { SafeExternalLink } from './SafeExternalLink'
 
 type RestaurantHeroProps = {
   restaurant: Restaurant
@@ -11,13 +13,16 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
     () => getRandomReviewWithImage(restaurant),
     [restaurant.slug, restaurant.reviews],
   )
+  const placeImageUrl = getSafeImageUrl(restaurant.imageUrl)
+  const overlayImageUrl = getSafeImageUrl(reviewOverlay?.imageUrl)
+  const googleMapsUrl = getSafeGoogleMapsUrl(restaurant)
 
   return (
     <section className="overflow-hidden rounded-3xl border-4 border-mcd-charcoal bg-white shadow-[0_8px_0_#27251f]">
       <div className="relative min-h-[240px] sm:min-h-[280px]">
-        {restaurant.imageUrl ? (
+        {placeImageUrl ? (
           <img
-            src={restaurant.imageUrl}
+            src={placeImageUrl}
             alt={`${restaurant.name} exterior`}
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -25,10 +30,10 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
           <div className="absolute inset-0 bg-gradient-to-br from-mcd-gold via-mcd-red to-mcd-charcoal" />
         )}
 
-        {reviewOverlay?.imageUrl && (
+        {overlayImageUrl && (
           <img
-            src={reviewOverlay.imageUrl}
-            alt={`Photo from a 1-star review by ${reviewOverlay.author}`}
+            src={overlayImageUrl}
+            alt={`Photo from a 1-star review by ${reviewOverlay?.author ?? 'reviewer'}`}
             className="absolute inset-0 h-full w-full object-cover opacity-45"
           />
         )}
@@ -46,25 +51,23 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
             <p className="mt-2 text-white/80">
               Their finest 1-star masterpieces
             </p>
-            {reviewOverlay?.imageUrl && (
+            {overlayImageUrl && (
               <p className="mt-3 text-xs font-medium uppercase tracking-wide text-white/60">
-                Review photo by {reviewOverlay.author}
+                Review photo by {reviewOverlay?.author}
               </p>
             )}
           </div>
         </div>
       </div>
 
-      {restaurant.googleMapsUrl && (
+      {googleMapsUrl && (
         <div className="border-t border-mcd-charcoal/10 px-6 py-4 sm:px-8">
-          <a
-            href={restaurant.googleMapsUrl}
-            target="_blank"
-            rel="noreferrer"
+          <SafeExternalLink
+            href={googleMapsUrl}
             className="inline-flex items-center gap-2 rounded-full border-2 border-mcd-charcoal/15 px-4 py-2 text-sm font-semibold text-mcd-charcoal transition hover:border-mcd-red hover:text-mcd-red"
           >
             View on Google Maps ↗
-          </a>
+          </SafeExternalLink>
         </div>
       )}
     </section>

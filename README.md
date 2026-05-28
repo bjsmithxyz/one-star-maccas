@@ -126,14 +126,27 @@ This is a **static site** with no backend. Attack surface is small, but keep the
 ### Frontend
 
 - Review text is rendered as React text nodes (auto-escaped) — no `dangerouslySetInnerHTML`.
-- External links use `rel="noreferrer"` and `target="_blank"`.
-- `sourceUrl` links are validated in `getReviewSourceUrl()` — only `http`/`https` URLs on `google.com` / `googleusercontent.com` are rendered.
+- External links use `SafeExternalLink` with `rel="noopener noreferrer"` and `referrerPolicy="no-referrer"`.
+- URLs are validated in `src/lib/security.ts`:
+  - Review links → Google domains only
+  - Google Maps links → Google domains only
+  - Images → `/photos/*` paths or `https://*.googleusercontent.com`
+  - Route slugs → `[a-z0-9-]` only
+- `index.html` sets CSP, `Referrer-Policy`, and `X-Content-Type-Options`.
 - Reaction data stays in `localStorage` on the client; nothing sensitive is stored.
+
+Run automated checks locally:
+
+```bash
+npm run security:check
+```
 
 ### CI / deploy
 
-- GitHub Actions workflow uses minimal permissions (`contents: read`, `pages: write`).
+- GitHub Actions runs `npm run security:check` before every build.
+- Workflow uses minimal permissions (`contents: read`, `pages: write`).
 - Build runs `npm run build` with no secrets — deploy artifact is static HTML/JS/CSS.
+- Ingest scripts redact API keys from error output.
 - Run `npm audit` periodically; address moderate+ findings.
 
 ### Data integrity
