@@ -3,21 +3,18 @@ import { Layout } from '../components/Layout'
 import { RandomButton } from '../components/RandomButton'
 import { ReviewCard } from '../components/ReviewCard'
 import { SITE_NAME } from '../constants/branding'
-import { getAllRestaurants, getFeaturedReviews, getReviewSourceUrl } from '../data'
+import { getFeaturedReviews, getReviewSourceUrl, getSiteStats } from '../data'
 
 export function HomePage() {
   const featured = getFeaturedReviews(12)
-  const totalReviews = getAllRestaurants().reduce(
-    (sum, restaurant) => sum + restaurant.reviews.length,
-    0,
-  )
+  const stats = getSiteStats()
 
   return (
     <Layout>
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
           <p className="mb-3 inline-flex rounded-full bg-mcd-red/10 px-4 py-1 text-sm font-semibold uppercase tracking-widest text-mcd-red">
-            English edition
+            Global edition
           </p>
           <h1 className="font-display text-4xl leading-none text-mcd-charcoal sm:text-6xl">
             {SITE_NAME}
@@ -30,8 +27,12 @@ export function HomePage() {
           <div className="mt-8 flex flex-col items-center gap-3">
             <RandomButton size="lg" />
             <p className="text-sm text-mcd-charcoal/60">
-              {getAllRestaurants().length} restaurants
-              {totalReviews > 0 && ` · ${totalReviews} reviews`}
+              {stats.restaurantCount} restaurant
+              {stats.restaurantCount === 1 ? '' : 's'}
+              {stats.reviewCount > 0 &&
+                ` · ${stats.reviewCount} review${stats.reviewCount === 1 ? '' : 's'}`}
+              {stats.locationCount > stats.restaurantCount &&
+                ` · ${stats.locationCount} locations tracked`}
             </p>
           </div>
         </div>

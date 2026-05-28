@@ -1,10 +1,23 @@
 import restaurantsData from './restaurants.json'
-import type { FeaturedReview, Restaurant } from '../types'
+import type { FeaturedReview, Restaurant, SiteStats } from '../types'
 
 const restaurants = restaurantsData as Restaurant[]
 
 export function getAllRestaurants(): Restaurant[] {
   return restaurants
+}
+
+export function getSiteStats(): SiteStats {
+  const locationCount = restaurants.length
+  const restaurantCount = restaurants.filter(
+    (restaurant) => restaurant.reviews.length > 0,
+  ).length
+  const reviewCount = restaurants.reduce(
+    (sum, restaurant) => sum + restaurant.reviews.length,
+    0,
+  )
+
+  return { locationCount, restaurantCount, reviewCount }
 }
 
 export function getRestaurantBySlug(slug: string): Restaurant | undefined {

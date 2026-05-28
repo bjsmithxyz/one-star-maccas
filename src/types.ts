@@ -25,3 +25,12 @@ export type Restaurant = {
 export type FeaturedReview = Review & {
   restaurant: Restaurant
 }
+
+export type SiteStats = {
+  /** Every McDonald's location in the dataset */
+  locationCount: number
+  /** Locations with at least one curated 1-star review */
+  restaurantCount: number
+  /** Total curated 1-star reviews across all locations */
+  reviewCount: number
+}

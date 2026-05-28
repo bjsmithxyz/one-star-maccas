@@ -116,11 +116,6 @@ async function getPlaceDetailsLegacy(placeId) {
   return body.result
 }
 
-function isEnglishReview(languageCode) {
-  if (!languageCode) return true
-  return languageCode.toLowerCase().startsWith('en')
-}
-
 function normalizePlaceId(place) {
   if (!place) return undefined
   if (typeof place === 'string') return place.replace(/^places\//, '')
@@ -228,7 +223,6 @@ function mapNewReviews(place, restaurant, placeReviewsUri) {
 
   return reviews
     .filter((review) => review.rating === 1)
-    .filter((review) => isEnglishReview(review.text?.languageCode))
     .filter((review) => (review.text?.text ?? '').trim().length > 0)
     .map((review, index) => ({
       id: `${restaurant.id}-g-${index + 1}`,
@@ -359,7 +353,7 @@ async function ingestRestaurant(restaurant) {
   )
 
   if (incomingWithPhotos.length === 0) {
-    console.warn('  No 1-star English reviews returned (API returns up to 5 reviews).')
+    console.warn('  No 1-star reviews returned (API returns up to 5 reviews).')
   }
 
   return {

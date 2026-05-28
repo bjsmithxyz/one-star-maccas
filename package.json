@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "ingest": "node scripts/ingest-reviews.mjs",
-    "ingest:dry": "node scripts/ingest-reviews.mjs --dry-run"
+    "ingest:dry": "node scripts/ingest-reviews.mjs --dry-run",
+    "ingest:outscraper": "node scripts/ingest-outscraper.mjs",
+    "ingest:outscraper:dry": "node scripts/ingest-outscraper.mjs --dry-run"
   },
   "dependencies": {
     "react": "^19.2.6",

@@ -1,6 +1,6 @@
 # 1 star maccas
 
-The worst 1-star Google reviews from McDonald's around the world. English edition first.
+The worst 1-star Google reviews from McDonald's around the world.
 
 ## Run locally
 
@@ -20,7 +20,7 @@ npm run preview
 
 ## Ingest real reviews
 
-Google Places API returns up to **5 reviews per location** (official limit). The script filters for **1-star English** reviews with live Google Maps links.
+Google Places API returns up to **5 reviews per location** (official limit). The script filters for **1-star** reviews with live Google Maps links (any language).
 
 ### Setup
 
@@ -52,7 +52,47 @@ The script will:
 - Merge into `src/data/restaurants.json` without duplicates
 - Rank by review length (`funnyRank`) — edit manually afterward if you prefer
 
-**Note:** Most locations won't have a 1-star review in Google's top 5 returned results. Re-run periodically or add locations with more negative reviews. For full review history you'd need a paid scraper API (Outscraper, SerpAPI).
+**Note:** Most locations won't have a 1-star review in Google's top 5 returned results. Re-run periodically or add locations with more negative reviews.
+
+### Outscraper (more reviews + photos)
+
+Google's official API caps at 5 reviews per place and does not return review photos. [Outscraper](https://outscraper.com/google-maps-reviews-api/) can fetch many more low-rated reviews and includes `review_img_url` for hero overlays.
+
+Free tier: **500 reviews/month**. After that, roughly $3 per 1,000 reviews.
+
+1. Sign up at [outscraper.com](https://outscraper.com/) and copy your API key into `.env`:
+
+```bash
+OUTSCRAPER_API_KEY=...
+```
+
+2. Run after the Google Places ingest (needs `placeId` on each location):
+
+```bash
+# All locations — fetches up to 50 lowest-rated reviews per place, keeps 1-star reviews
+npm run ingest:outscraper
+
+# Single location test
+npm run ingest:outscraper -- --slug=times-square-nyc
+
+# Preview without writing JSON
+npm run ingest:outscraper:dry -- --slug=times-square-nyc
+
+# Fetch fewer reviews per location (saves quota)
+npm run ingest:outscraper -- --reviews-limit=20
+```
+
+The Outscraper script merges by `sourceUrl` (no duplicates), downloads review photos to `public/photos/{slug}/`, and re-ranks by review length.
+
+## Site stats
+
+The home page hero line (`20 restaurants · 49 reviews · 22 locations tracked`) is computed from `src/data/restaurants.json` via `getSiteStats()` in `src/data/index.ts`:
+
+- **restaurants** — locations with at least one curated 1-star review
+- **reviews** — total curated reviews across all locations
+- **locations tracked** — shown when some locations have no 1-star reviews yet
+
+Re-run ingest after updating data and the counts update automatically on rebuild.
 
 ## Add reviews manually
 
