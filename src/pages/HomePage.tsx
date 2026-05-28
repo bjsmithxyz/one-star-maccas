@@ -2,12 +2,10 @@ import { Link } from 'react-router-dom'
 import { Layout } from '../components/Layout'
 import { RandomButton } from '../components/RandomButton'
 import { ReactionLeaderboard } from '../components/ReactionLeaderboard'
-import { ReviewCard } from '../components/ReviewCard'
 import { SITE_NAME } from '../constants/branding'
-import { getFeaturedReviews, getReviewSourceUrl, getSiteStats } from '../data'
+import { getSiteStats } from '../data'
 
 export function HomePage() {
-  const featured = getFeaturedReviews(12)
   const stats = getSiteStats()
 
   return (
@@ -44,36 +42,6 @@ export function HomePage() {
       </section>
 
       <ReactionLeaderboard />
-
-      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
-        <div className="mb-6">
-          <h2 className="font-display text-2xl text-mcd-charcoal sm:text-3xl">
-            Hall of Fame
-          </h2>
-        </div>
-
-        {featured.length > 0 ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((item) => (
-              <ReviewCard
-                key={item.sourceUrl}
-                review={item}
-                restaurant={item.restaurant}
-                showLocation
-                sourceUrl={getReviewSourceUrl(item)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-2xl border-2 border-dashed border-mcd-charcoal/15 bg-white/70 px-6 py-12 text-center">
-            <p className="font-display text-xl text-mcd-charcoal">No reviews yet</p>
-            <p className="mx-auto mt-2 max-w-md text-sm text-mcd-charcoal/70">
-              Real 1-star Google reviews with live links will appear here once
-              they&apos;re added to the dataset.
-            </p>
-          </div>
-        )}
-      </section>
     </Layout>
   )
 }

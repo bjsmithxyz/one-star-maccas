@@ -70,7 +70,7 @@ export function ReactionLeaderboard() {
   if (!isSupabaseConfigured()) return null
 
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
+    <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
       <div className="mb-4 text-center">
         <h2 className="font-display text-2xl text-mcd-charcoal sm:text-3xl">
           Most Clowned On
@@ -112,7 +112,8 @@ export function ReactionLeaderboard() {
                       {RANK_LABELS[index] ?? `#${index + 1}`}
                     </span>
                     <span className="rounded-full bg-mcd-red/10 px-2.5 py-0.5 text-xs font-bold tabular-nums text-mcd-red">
-                      {entry.totalReactions}
+                      {entry.totalReactions}{' '}
+                      {entry.totalReactions === 1 ? 'honk' : 'honks'}
                     </span>
                   </div>
 

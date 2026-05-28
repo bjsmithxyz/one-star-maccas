@@ -50,19 +50,6 @@ export function getRandomRestaurant(excludeSlug?: string): Restaurant {
   return pool[index] ?? restaurants[0]
 }
 
-export function getFeaturedReviews(limit = 12): FeaturedReview[] {
-  const featured = restaurants.flatMap((restaurant) =>
-    restaurant.reviews.map((review) => ({
-      ...review,
-      restaurant,
-    })),
-  )
-
-  return featured
-    .sort((a, b) => a.funnyRank - b.funnyRank)
-    .slice(0, limit)
-}
-
 export { reviewOwnsImageUrl } from '../lib/review-images'
 
 export function getReviewSourceUrl(review: { sourceUrl: string }): string {
