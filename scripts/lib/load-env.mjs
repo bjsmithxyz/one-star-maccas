@@ -15,7 +15,7 @@ export function loadEnvFile(envPath) {
     const key = trimmed.slice(0, separator).trim()
     const value = trimmed.slice(separator + 1).trim().replace(/^["']|["']$/g, '')
 
-    if (!(key in process.env)) {
+    if (!(key in process.env) || process.env[key] === '' || process.env[key]?.startsWith('your_')) {
       process.env[key] = value
     }
   }

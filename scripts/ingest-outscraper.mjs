@@ -102,8 +102,12 @@ function mergeReviews(existing, incoming) {
       continue
     }
 
-    if (review.imageUrl && !merged[index].imageUrl) {
-      merged[index] = { ...merged[index], imageUrl: review.imageUrl }
+    const current = merged[index]
+    merged[index] = {
+      ...current,
+      text: review.text.length > current.text.length ? review.text : current.text,
+      imageUrl: current.imageUrl || review.imageUrl,
+      _photoUrl: current._photoUrl || review._photoUrl,
     }
   }
 
@@ -190,7 +194,16 @@ async function attachReviewPhotos(reviews, slug) {
 }
 
 function getPlaceQuery(restaurant) {
-  return restaurant.placeId || restaurant.googleMapsUrl || ''
+  const placeId = restaurant.placeId?.trim() ?? ''
+  if (
+    placeId &&
+    !placeId.includes('maps.app.goo.gl') &&
+    !placeId.includes('goo.gl/maps')
+  ) {
+    return placeId
+  }
+
+  return restaurant.googleMapsUrl || placeId
 }
 
 async function ingestRestaurant(restaurant) {
