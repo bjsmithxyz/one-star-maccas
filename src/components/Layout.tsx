@@ -26,11 +26,19 @@ export function Layout({ children, excludeSlug }: LayoutProps) {
             </div>
           </Link>
 
-          <RandomButton
-            excludeSlug={excludeSlug}
-            size="sm"
-            label="Random"
-          />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              to="/map"
+              className="rounded-full border-2 border-mcd-charcoal/15 px-3 py-2 text-sm font-semibold text-mcd-charcoal transition hover:border-mcd-red hover:text-mcd-red sm:px-4"
+            >
+              Map
+            </Link>
+            <RandomButton
+              excludeSlug={excludeSlug}
+              size="sm"
+              label="Random"
+            />
+          </div>
         </div>
       </header>
 

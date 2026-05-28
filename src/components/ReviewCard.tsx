@@ -24,7 +24,7 @@ export function ReviewCard({
   sourceUrl,
 }: ReviewCardProps) {
   return (
-    <article className="group relative rounded-2xl border-2 border-mcd-charcoal/10 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-mcd-red/30 hover:shadow-lg sm:p-6">
+    <article className="group relative overflow-visible rounded-2xl border-2 border-mcd-charcoal/10 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-mcd-red/30 hover:shadow-lg sm:p-6">
       <span
         aria-hidden
         className="absolute -top-3 left-4 font-display text-5xl leading-none text-mcd-gold"

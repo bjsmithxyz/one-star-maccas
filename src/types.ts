@@ -18,6 +18,8 @@ export type Restaurant = {
   flag: string
   googleMapsUrl?: string
   placeId?: string
+  lat?: number
+  lng?: number
   imageUrl?: string
   reviews: Review[]
 }

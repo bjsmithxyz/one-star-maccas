@@ -20,6 +20,13 @@ export function getSiteStats(): SiteStats {
   return { locationCount, restaurantCount, reviewCount }
 }
 
+export function getMapRestaurants(): Restaurant[] {
+  return restaurants.filter(
+    (restaurant) =>
+      typeof restaurant.lat === 'number' && typeof restaurant.lng === 'number',
+  )
+}
+
 export function getRestaurantBySlug(slug: string): Restaurant | undefined {
   return restaurants.find((restaurant) => restaurant.slug === slug)
 }
@@ -47,5 +54,20 @@ export function getFeaturedReviews(limit = 12): FeaturedReview[] {
 }
 
 export function getReviewSourceUrl(review: { sourceUrl: string }): string {
-  return review.sourceUrl
+  try {
+    const url = new URL(review.sourceUrl)
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+      return ''
+    }
+
+    const host = url.hostname.toLowerCase()
+    const allowed =
+      host === 'google.com' ||
+      host.endsWith('.google.com') ||
+      host.endsWith('.googleusercontent.com')
+
+    return allowed ? review.sourceUrl : ''
+  } catch {
+    return ''
+  }
 }

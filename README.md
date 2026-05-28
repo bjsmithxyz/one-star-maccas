@@ -2,6 +2,14 @@
 
 The worst 1-star Google reviews from McDonald's around the world.
 
+Live site: https://bjsmithxyz.github.io/one-star-maccas/
+
+## Stack
+
+- Vite + React + TypeScript + Tailwind
+- Static JSON dataset (`src/data/restaurants.json`)
+- GitHub Pages deploy on push to `master`
+
 ## Run locally
 
 ```bash
@@ -18,6 +26,18 @@ npm run build
 npm run preview
 ```
 
+## Project layout
+
+| Path | Purpose |
+| --- | --- |
+| `src/pages/` | Home, restaurant detail, map, 404 |
+| `src/data/` | JSON dataset + helpers (`getSiteStats`, `getMapRestaurants`) |
+| `src/components/` | Review cards, reactions, Leaflet map, hero |
+| `scripts/ingest-reviews.mjs` | Google Places ingest (placeId, up to 5 reviews/location) |
+| `scripts/ingest-outscraper.mjs` | Outscraper ingest (more reviews + photos) |
+| `scripts/geocode-locations.mjs` | Add `lat`/`lng` via OpenStreetMap Nominatim |
+| `public/photos/` | Downloaded place and review images |
+
 ## Ingest real reviews
 
 Google Places API returns up to **5 reviews per location** (official limit). The script filters for **1-star** reviews with live Google Maps links (any language).
@@ -26,81 +46,59 @@ Google Places API returns up to **5 reviews per location** (official limit). The
 
 1. Create a [Google Cloud API key](https://console.cloud.google.com/google/maps-apis/credentials)
 2. Enable **Places API (New)** (legacy Places API works as fallback)
-3. Copy `.env.example` to `.env` and add your key:
+3. Copy `.env.example` to `.env` and add your keys locally:
 
 ```bash
 cp .env.example .env
-# edit .env → GOOGLE_MAPS_API_KEY=...
+# edit .env — never commit this file
 ```
 
-### Run
+### Google Places ingest
 
 ```bash
-# All 22 locations
 npm run ingest
-
-# Single location (good for testing)
 npm run ingest -- --slug=times-square-nyc
-
-# Preview without writing JSON
 npm run ingest:dry -- --slug=times-square-nyc
 ```
 
-The script will:
-- Resolve each McDonald's on Google Maps and save `placeId`
-- Pull real reviews with `sourceUrl` (live Google Maps link per review)
-- Merge into `src/data/restaurants.json` without duplicates
-- Rank by review length (`funnyRank`) — edit manually afterward if you prefer
-
-**Note:** Most locations won't have a 1-star review in Google's top 5 returned results. Re-run periodically or add locations with more negative reviews.
-
 ### Outscraper (more reviews + photos)
 
-Google's official API caps at 5 reviews per place and does not return review photos. [Outscraper](https://outscraper.com/google-maps-reviews-api/) can fetch many more low-rated reviews and includes `review_img_url` for hero overlays.
-
-Free tier: **500 reviews/month**. After that, roughly $3 per 1,000 reviews.
-
-1. Sign up at [outscraper.com](https://outscraper.com/) and copy your API key into `.env`:
+[Outscraper](https://outscraper.com/google-maps-reviews-api/) fetches many more low-rated reviews and includes `review_img_url` for hero overlays. Free tier: **500 reviews/month**.
 
 ```bash
-OUTSCRAPER_API_KEY=...
-```
-
-2. Run after the Google Places ingest (needs `placeId` on each location):
-
-```bash
-# All locations — fetches up to 50 lowest-rated reviews per place, keeps 1-star reviews
-npm run ingest:outscraper
-
-# Single location test
-npm run ingest:outscraper -- --slug=times-square-nyc
-
-# Preview without writing JSON
+npm run ingest:outscraper -- --reviews-limit=10 --quota-budget=490
 npm run ingest:outscraper:dry -- --slug=times-square-nyc
-
-# Fetch fewer reviews per location (saves quota)
-npm run ingest:outscraper -- --reviews-limit=20
 ```
 
-The Outscraper script merges by `sourceUrl` (no duplicates), downloads review photos to `public/photos/{slug}/`, and re-ranks by review length.
+Both ingest scripts merge by `sourceUrl`, assign stable review IDs, download photos to `public/photos/{slug}/`, and rank by review length (`funnyRank`).
+
+### Geocode locations
+
+```bash
+npm run geocode
+```
+
+Adds `lat`/`lng` to each restaurant for the map page (~1 Nominatim request/sec).
+
+## Map
+
+Interactive world map at `/map` using [Leaflet](https://leafletjs.com/) + OpenStreetMap tiles (no API key). Loaded lazily so the home page stays light.
 
 ## Site stats
 
-The home page hero line (`20 restaurants · 49 reviews · 22 locations tracked`) is computed from `src/data/restaurants.json` via `getSiteStats()` in `src/data/index.ts`:
+Hero line (e.g. `22 restaurants · 269 reviews · view map`) comes from `getSiteStats()` in `src/data/index.ts` and updates automatically after ingest + rebuild.
 
-- **restaurants** — locations with at least one curated 1-star review
-- **reviews** — total curated reviews across all locations
-- **locations tracked** — shown when some locations have no 1-star reviews yet
+## Reactions
 
-Re-run ingest after updating data and the counts update automatically on rebuild.
+Discord-style reaction bar on each review: clown emojis + 😂, with a **+** picker for standard emojis. Counts are stored in the visitor's browser (`localStorage` only) — no server, no seeded counts.
 
 ## Add reviews manually
 
-Edit [`src/data/restaurants.json`](src/data/restaurants.json). Each review must be a real Google review with a live link — no placeholder or fabricated text.
+Edit [`src/data/restaurants.json`](src/data/restaurants.json). Each review must be a real Google review with a live link.
 
 ```json
 {
-  "id": "r-001-1",
+  "id": "mcd-001-r-abc123",
   "text": "Exact review text from Google",
   "author": "Reviewer name",
   "date": "2024-11-03",
@@ -110,17 +108,42 @@ Edit [`src/data/restaurants.json`](src/data/restaurants.json). Each review must 
 }
 ```
 
-- `sourceUrl` is required — links to the live Google review
+- `sourceUrl` is required — must be a Google Maps HTTPS link
 - `funnyRank`: `1` is funniest at that location
 - `imageUrl` is optional — only use photos from the actual review
 
-Reactions are stored in the visitor's browser only. Counts start at zero with no seeded data.
+## Security
+
+This is a **static site** with no backend. Attack surface is small, but keep these practices in mind:
+
+### Secrets
+
+- **Never commit `.env`** — it is gitignored. Only placeholders live in `.env.example`.
+- API keys (`GOOGLE_MAPS_API_KEY`, `OUTSCRAPER_API_KEY`) are used **only in Node ingest scripts**, never bundled into the frontend.
+- Restrict Google Cloud keys to Places API only; use IP restriction for local ingest or a separate key per developer.
+- Rotate any key immediately if it is pasted into chat, committed by mistake, or exposed in a PR.
+
+### Frontend
+
+- Review text is rendered as React text nodes (auto-escaped) — no `dangerouslySetInnerHTML`.
+- External links use `rel="noreferrer"` and `target="_blank"`.
+- `sourceUrl` links are validated in `getReviewSourceUrl()` — only `http`/`https` URLs on `google.com` / `googleusercontent.com` are rendered.
+- Reaction data stays in `localStorage` on the client; nothing sensitive is stored.
+
+### CI / deploy
+
+- GitHub Actions workflow uses minimal permissions (`contents: read`, `pages: write`).
+- Build runs `npm run build` with no secrets — deploy artifact is static HTML/JS/CSS.
+- Run `npm audit` periodically; address moderate+ findings.
+
+### Data integrity
+
+- Ingest scripts dedupe reviews by `sourceUrl` and generate stable IDs (`scripts/lib/review-id.mjs`).
+- Do not add fabricated reviews or fake reaction counts.
 
 ## Deploy
 
-The build output is in `dist/`. Pushes to `master` deploy to GitHub Pages automatically.
-
-Live site: https://bjsmithxyz.github.io/one-star-maccas/
+Pushes to `master` deploy to GitHub Pages automatically via `.github/workflows/deploy-pages.yml`.
 
 ## Disclaimer
 

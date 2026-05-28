@@ -13,9 +13,6 @@ export function HomePage() {
     <Layout>
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <p className="mb-3 inline-flex rounded-full bg-mcd-red/10 px-4 py-1 text-sm font-semibold uppercase tracking-widest text-mcd-red">
-            Global edition
-          </p>
           <h1 className="font-display text-4xl leading-none text-mcd-charcoal sm:text-6xl">
             {SITE_NAME}
           </h1>
@@ -33,6 +30,13 @@ export function HomePage() {
                 ` · ${stats.reviewCount} review${stats.reviewCount === 1 ? '' : 's'}`}
               {stats.locationCount > stats.restaurantCount &&
                 ` · ${stats.locationCount} locations tracked`}
+              {' · '}
+              <Link
+                to="/map"
+                className="font-semibold text-mcd-charcoal underline decoration-mcd-gold decoration-2 underline-offset-2 transition hover:text-mcd-red"
+              >
+                view map
+              </Link>
             </p>
           </div>
         </div>
@@ -50,7 +54,7 @@ export function HomePage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((item) => (
               <ReviewCard
-                key={item.id}
+                key={item.sourceUrl}
                 review={item}
                 restaurant={item.restaurant}
                 showLocation

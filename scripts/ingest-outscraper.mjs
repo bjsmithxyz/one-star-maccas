@@ -15,6 +15,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { dedupeReviewsBySource, stableReviewId } from './lib/review-id.mjs'
 import { loadEnvFile } from './lib/load-env.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -86,18 +87,21 @@ function rankReviews(reviews) {
 }
 
 function mergeReviews(existing, incoming) {
-  const bySource = new Map(existing.map((review) => [review.sourceUrl, { ...review }]))
+  const merged = [...existing]
 
   for (const review of incoming) {
-    const current = bySource.get(review.sourceUrl)
-    if (current) {
-      if (review.imageUrl && !current.imageUrl) current.imageUrl = review.imageUrl
+    const index = merged.findIndex((item) => item.sourceUrl === review.sourceUrl)
+    if (index === -1) {
+      merged.push(review)
       continue
     }
-    bySource.set(review.sourceUrl, review)
+
+    if (review.imageUrl && !merged[index].imageUrl) {
+      merged[index] = { ...merged[index], imageUrl: review.imageUrl }
+    }
   }
 
-  return rankReviews([...bySource.values()])
+  return rankReviews(merged)
 }
 
 async function downloadImage(url, destPath) {
@@ -153,7 +157,7 @@ function mapOutscraperReviews(rawReviews, restaurant) {
   return rawReviews
     .filter((review) => review.review_rating === 1)
     .map((review, index) => ({
-      id: `${restaurant.id}-os-${review.reviews_id ?? index + 1}`,
+      id: stableReviewId(restaurant.id, review.review_link),
       text: review.review_text.trim(),
       author: review.author_title ?? 'Google User',
       date: parseOutscraperDate(review.review_datetime_utc),

@@ -1,11 +1,4 @@
-export type ClownVariant =
-  | 'happy'
-  | 'sad'
-  | 'confused'
-  | 'angry'
-  | 'dead'
-  | 'shocked'
-  | 'sick'
+export type ClownVariant = 'sad' | 'confused' | 'shocked' | 'dead' | 'sick'
 
 type ClownEmojiProps = {
   variant: ClownVariant
@@ -42,20 +35,6 @@ export function ClownEmoji({
         strokeLinecap="round"
       />
 
-      {variant === 'happy' && (
-        <>
-          <circle cx="11" cy="14" r="1.8" fill="#27251F" />
-          <circle cx="21" cy="14" r="1.8" fill="#27251F" />
-          <path
-            d="M10 21c2 3 10 3 12 0"
-            fill="none"
-            stroke="#27251F"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </>
-      )}
-
       {variant === 'sad' && (
         <>
           <path d="M9 13h4M19 13h4" stroke="#27251F" strokeWidth="2" strokeLinecap="round" />
@@ -83,21 +62,6 @@ export function ClownEmoji({
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-          />
-        </>
-      )}
-
-      {variant === 'angry' && (
-        <>
-          <path d="M8 12l5 2M24 12l-5 2" stroke="#27251F" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="11" cy="15" r="1.8" fill="#27251F" />
-          <circle cx="21" cy="15" r="1.8" fill="#27251F" />
-          <path
-            d="M11 22c2-2 8-2 10 0"
-            fill="none"
-            stroke="#27251F"
-            strokeWidth="2"
-            strokeLinecap="round"
           />
         </>
       )}

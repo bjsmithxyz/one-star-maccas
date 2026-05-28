@@ -1,27 +1,17 @@
 import { useEffect, useState } from 'react'
-import type { ClownVariant } from '../components/ClownEmoji'
-
-export const CLOWN_REACTIONS: {
-  id: ClownVariant
-  label: string
-}[] = [
-  { id: 'happy', label: 'Happy clown' },
-  { id: 'sad', label: 'Sad clown' },
-  { id: 'confused', label: 'Confused clown' },
-  { id: 'angry', label: 'Angry clown' },
-  { id: 'shocked', label: 'Shocked clown' },
-  { id: 'dead', label: 'Dead clown' },
-  { id: 'sick', label: 'Sick clown' },
-]
+import {
+  ALL_REACTION_IDS,
+  type ReactionId,
+} from '../constants/reactions'
 
 type ReviewReactionData = {
-  added: Partial<Record<ClownVariant, number>>
-  mine: ClownVariant[]
+  added: Partial<Record<ReactionId, number>>
+  mine: ReactionId[]
 }
 
 type ReactionStore = Record<string, ReviewReactionData>
 
-const REACTIONS_KEY = '1-star-maccas-reactions-v2'
+const REACTIONS_KEY = '1-star-maccas-reactions-v4'
 
 function readStore(): ReactionStore {
   try {
@@ -42,12 +32,10 @@ function readStore(): ReactionStore {
 
 function normalizeReactionData(data: Partial<ReviewReactionData>): ReviewReactionData {
   const mine = Array.isArray(data.mine)
-    ? data.mine
-    : data.mine && typeof data.mine === 'object'
-      ? (Object.entries(data.mine as Partial<Record<ClownVariant, number>>)
-          .filter(([, count]) => (count ?? 0) > 0)
-          .map(([id]) => id) as ClownVariant[])
-      : []
+    ? data.mine.filter((id): id is ReactionId =>
+        ALL_REACTION_IDS.includes(id as ReactionId),
+      )
+    : []
 
   const added = { ...(data.added ?? {}) }
   for (const id of mine) {
@@ -69,15 +57,15 @@ function emptyReactionData(): ReviewReactionData {
 
 function buildCounts(data: ReviewReactionData) {
   return Object.fromEntries(
-    CLOWN_REACTIONS.map(({ id }) => [id, data.added[id] ?? 0]),
-  ) as Record<ClownVariant, number>
+    ALL_REACTION_IDS.map((id) => [id, data.added[id] ?? 0]),
+  ) as Record<ReactionId, number>
 }
 
 export function useReviewReactions(reviewId: string) {
-  const [counts, setCounts] = useState<Record<ClownVariant, number>>(() =>
+  const [counts, setCounts] = useState<Record<ReactionId, number>>(() =>
     buildCounts(emptyReactionData()),
   )
-  const [myReactions, setMyReactions] = useState<ClownVariant[]>([])
+  const [myReactions, setMyReactions] = useState<ReactionId[]>([])
 
   useEffect(() => {
     const stored = readStore()
@@ -87,7 +75,7 @@ export function useReviewReactions(reviewId: string) {
     setMyReactions(data.mine)
   }, [reviewId])
 
-  const toggleReaction = (reactionId: ClownVariant) => {
+  const toggleReaction = (reactionId: ReactionId) => {
     const stored = readStore()
     const data = normalizeReactionData(stored[reviewId] ?? emptyReactionData())
     const hasReaction = data.mine.includes(reactionId)
@@ -109,3 +97,5 @@ export function useReviewReactions(reviewId: string) {
 
   return { counts, myReactions, toggleReaction }
 }
+
+export { PRIMARY_REACTIONS, EXTRA_EMOJI_REACTIONS } from '../constants/reactions'

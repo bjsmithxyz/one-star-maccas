@@ -51,10 +51,10 @@ export function RestaurantPage() {
         </div>
 
         {reviews.length > 0 ? (
-          <div className="review-stagger mt-6 grid gap-5">
+          <div key={restaurant.slug} className="review-stagger mt-6 grid gap-5">
             {reviews.map((review) => (
               <ReviewCard
-                key={review.id}
+                key={review.sourceUrl}
                 review={review}
                 sourceUrl={getReviewSourceUrl(review)}
               />

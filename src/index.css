@@ -62,6 +62,36 @@
   .globe-flash {
     animation: globe-flash 0.25s ease;
   }
+
+  .mcd-map-pin {
+    display: flex;
+    height: 36px;
+    width: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px 9999px 9999px 0;
+    rotate: -45deg;
+    background: #da291c;
+    border: 2px solid #27251f;
+    box-shadow: 0 4px 10px rgb(39 37 31 / 0.25);
+  }
+
+  .mcd-map-pin span {
+    rotate: 45deg;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+  }
+
+  .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    border: 2px solid rgb(39 37 31 / 0.08);
+  }
+
+  .leaflet-popup-content {
+    margin: 12px 14px;
+  }
 }
 
 @keyframes fade-up {
