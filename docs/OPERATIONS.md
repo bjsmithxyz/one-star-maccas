@@ -79,9 +79,11 @@ Outscraper accepts `placeId` or `googleMapsUrl` (including `maps.app.goo.gl` lin
 
 ## Reactions / Supabase
 
-- Local: copy [`.env.example`](../.env.example) → `.env`, set `VITE_SUPABASE_*`
+- Local: copy [`.env.example`](../.env.example) → `.env`, set `VITE_SUPABASE_*` (anon key only — never `service_role`)
 - Production: `github-pages` environment secrets (same var names)
-- SQL migrations: run both files in [`supabase/migrations/`](../supabase/migrations/) in filename order
+- SQL migrations: run **all** files in [`supabase/migrations/`](../supabase/migrations/) in filename order (five files through `20260528160000_cleanup_legacy_reaction_votes.sql`)
+
+Rate limiting options if RPC volume grows: see [README § Rate limiting](../README.md#rate-limiting-supabase-reactions).
 
 See [README § Reactions](../README.md#reactions) and [README § Security](../README.md#security).
 
@@ -122,6 +124,6 @@ After code changes: `npm run build` locally; CI must pass on push.
 | `npm run ingest` | Google Places ingest |
 | `npm run ingest:outscraper` | Outscraper ingest |
 | `npm run geocode` | Add lat/lng via Nominatim |
-| `npm run security:check` | Pre-commit / CI security gates |
+| `npm run security:check` | Static security gates + `npm audit` (moderate+) |
 
 Full option lists and API setup: [README](../README.md).

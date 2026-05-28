@@ -127,9 +127,10 @@ export function ReactionLeaderboard() {
             const reviewHref = `/r/${entry.restaurantSlug}#${entry.reviewId}`
 
             return (
-              <article
+              <Link
                 key={entry.reviewId}
-                className="flex h-full flex-col overflow-hidden rounded-xl border-2 border-mcd-charcoal/10 bg-white shadow-sm"
+                to={reviewHref}
+                className="group flex h-full flex-col overflow-hidden rounded-xl border-2 border-mcd-charcoal/10 bg-white shadow-sm transition hover:border-mcd-red/25 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mcd-red"
               >
                 <div className="relative">
                   <LeaderboardImage
@@ -146,19 +147,9 @@ export function ReactionLeaderboard() {
                 </div>
 
                 <div className="flex flex-1 flex-col p-4">
-                  <p className="text-sm leading-snug text-mcd-charcoal sm:text-base">
+                  <p className="text-sm leading-snug text-mcd-charcoal group-hover:text-mcd-charcoal sm:text-base">
                     {preview}
-                    {showReadMore && (
-                      <>
-                        {' '}
-                        <Link
-                          to={reviewHref}
-                          className="font-semibold text-mcd-red underline decoration-mcd-gold decoration-2 underline-offset-2 hover:text-mcd-charcoal"
-                        >
-                          read more...
-                        </Link>
-                      </>
-                    )}
+                    {showReadMore && '…'}
                   </p>
 
                   <div className="mt-auto flex items-end justify-between gap-3 border-t border-mcd-charcoal/10 pt-3">
@@ -176,7 +167,7 @@ export function ReactionLeaderboard() {
                     </span>
                   </div>
                 </div>
-              </article>
+              </Link>
             )
           })}
         </div>
