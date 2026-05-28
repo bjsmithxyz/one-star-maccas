@@ -121,4 +121,4 @@ export function useReviewReactions(reviewId: string) {
   }
 }
 
-export { PRIMARY_REACTIONS, EXTRA_EMOJI_REACTIONS } from '../constants/reactions'
+export { PRIMARY_REACTIONS } from '../constants/reactions'

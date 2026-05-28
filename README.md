@@ -98,7 +98,7 @@ Hero line (e.g. `22 restaurants · 269 reviews · view map`) comes from `getSite
 
 ## Reactions
 
-Discord-style reaction bar on each review: clown emojis + 😂, with a **+** picker for standard emojis. Counts are **shared globally** via [Supabase](https://supabase.com/) when configured.
+Discord-style reaction bar on each review: six custom clown reactions. Counts are **shared globally** via [Supabase](https://supabase.com/) when configured.
 
 ### Supabase setup
 
@@ -106,6 +106,7 @@ Discord-style reaction bar on each review: clown emojis + 😂, with a **+** pic
    - [`supabase/migrations/20260527120000_reactions.sql`](supabase/migrations/20260527120000_reactions.sql)
    - [`supabase/migrations/20260528120000_reactions_security.sql`](supabase/migrations/20260528120000_reactions_security.sql)
    - [`supabase/migrations/20260528140000_top_reacted_reviews.sql`](supabase/migrations/20260528140000_top_reacted_reviews.sql)
+   - [`supabase/migrations/20260528150000_clown_only_reactions.sql`](supabase/migrations/20260528150000_clown_only_reactions.sql)
 2. Copy the **anon/public** key from Project Settings → API
 3. Add to `.env`:
 

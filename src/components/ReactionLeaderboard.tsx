@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ClownEmoji } from './ClownEmoji'
-import { getReviewById, getReviewImageUrl } from '../data'
+import { getReviewById, getReviewImageUrl, getSafeImageUrl } from '../data'
 import {
   fetchTopReactedReviews,
   isSupabaseConfigured,
@@ -17,6 +17,38 @@ type LeaderboardEntry = TopReactedReview & {
   restaurantSlug: string
   restaurantLabel: string
   imageUrl: string
+  placeImageUrl: string
+}
+
+function LeaderboardImage({
+  reviewImageUrl,
+  placeImageUrl,
+  author,
+}: {
+  reviewImageUrl: string
+  placeImageUrl: string
+  author: string
+}) {
+  const src = reviewImageUrl || placeImageUrl
+
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={reviewImageUrl ? `Photo from ${author}'s review` : ''}
+        className={`aspect-[2/1] w-full object-cover ${reviewImageUrl ? '' : 'opacity-90'}`}
+      />
+    )
+  }
+
+  return (
+    <div
+      aria-hidden
+      className="flex aspect-[2/1] w-full items-center justify-center bg-gradient-to-br from-mcd-gold via-mcd-red to-mcd-charcoal"
+    >
+      <span className="text-5xl drop-shadow-md">🍟</span>
+    </div>
+  )
 }
 
 export function ReactionLeaderboard() {
@@ -48,6 +80,7 @@ export function ReactionLeaderboard() {
               restaurantSlug: featured.restaurant.slug,
               restaurantLabel: `${featured.restaurant.flag} ${featured.restaurant.city}`,
               imageUrl: getReviewImageUrl(featured),
+              placeImageUrl: getSafeImageUrl(featured.restaurant.imageUrl),
             }
           })
           .filter((entry): entry is LeaderboardEntry => entry !== null)
@@ -78,16 +111,16 @@ export function ReactionLeaderboard() {
       </div>
 
       {isLoading ? (
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3">
           {[0, 1, 2].map((slot) => (
             <div
               key={slot}
-              className="h-28 animate-pulse rounded-xl border-2 border-mcd-charcoal/10 bg-white/70"
+              className="h-56 animate-pulse rounded-xl border-2 border-mcd-charcoal/10 bg-white/70"
             />
           ))}
         </div>
       ) : entries.length > 0 ? (
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3">
           {entries.map((entry, index) => {
             const preview = firstSentence(entry.reviewText)
             const showReadMore = hasMoreAfterFirstSentence(entry.reviewText)
@@ -96,28 +129,24 @@ export function ReactionLeaderboard() {
             return (
               <article
                 key={entry.reviewId}
-                className="overflow-hidden rounded-xl border-2 border-mcd-charcoal/10 bg-white shadow-sm"
+                className="flex h-full flex-col overflow-hidden rounded-xl border-2 border-mcd-charcoal/10 bg-white shadow-sm"
               >
-                {entry.imageUrl && (
-                  <img
-                    src={entry.imageUrl}
-                    alt=""
-                    className="aspect-[2/1] w-full object-cover"
+                <div className="relative">
+                  <LeaderboardImage
+                    reviewImageUrl={entry.imageUrl}
+                    placeImageUrl={entry.placeImageUrl}
+                    author={entry.author}
                   />
-                )}
+                  <span
+                    className="absolute left-3 top-3 text-4xl leading-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)] sm:text-5xl"
+                    aria-hidden
+                  >
+                    {RANK_LABELS[index] ?? `#${index + 1}`}
+                  </span>
+                </div>
 
-                <div className="p-4">
-                  <div className="mb-2 flex items-center justify-between gap-2">
-                    <span className="text-xl leading-none" aria-hidden>
-                      {RANK_LABELS[index] ?? `#${index + 1}`}
-                    </span>
-                    <span className="rounded-full bg-mcd-red/10 px-2.5 py-0.5 text-xs font-bold tabular-nums text-mcd-red">
-                      {entry.totalReactions}{' '}
-                      {entry.totalReactions === 1 ? 'honk' : 'honks'}
-                    </span>
-                  </div>
-
-                  <p className="text-sm leading-snug text-mcd-charcoal">
+                <div className="flex flex-1 flex-col p-4">
+                  <p className="text-sm leading-snug text-mcd-charcoal sm:text-base">
                     {preview}
                     {showReadMore && (
                       <>
@@ -132,9 +161,20 @@ export function ReactionLeaderboard() {
                     )}
                   </p>
 
-                  <p className="mt-2 text-xs text-mcd-charcoal/60">
-                    {entry.author} · {entry.restaurantLabel}
-                  </p>
+                  <div className="mt-auto flex items-end justify-between gap-3 border-t border-mcd-charcoal/10 pt-3">
+                    <div className="min-w-0">
+                      <p className="truncate font-semibold text-sm text-mcd-charcoal sm:text-base">
+                        {entry.author}
+                      </p>
+                      <p className="truncate text-sm font-medium text-mcd-charcoal/75 sm:text-base">
+                        {entry.restaurantLabel}
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-mcd-red px-3 py-1.5 text-sm font-bold tabular-nums text-white shadow-sm sm:text-base">
+                      {entry.totalReactions}{' '}
+                      {entry.totalReactions === 1 ? 'honk' : 'honks'}
+                    </span>
+                  </div>
                 </div>
               </article>
             )
