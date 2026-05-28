@@ -189,14 +189,19 @@ async function attachReviewPhotos(reviews, slug) {
   return updated
 }
 
+function getPlaceQuery(restaurant) {
+  return restaurant.placeId || restaurant.googleMapsUrl || ''
+}
+
 async function ingestRestaurant(restaurant) {
-  if (!restaurant.placeId) {
-    throw new Error('Missing placeId — run Google Places ingest first')
+  const placeQuery = getPlaceQuery(restaurant)
+  if (!placeQuery) {
+    throw new Error('Missing placeId or googleMapsUrl — run Google Places ingest first')
   }
 
   console.log(`→ ${restaurant.name} (${restaurant.city})`)
 
-  const rawReviews = await fetchOutscraperReviews(restaurant.placeId)
+  const rawReviews = await fetchOutscraperReviews(placeQuery)
   const mapped = mapOutscraperReviews(rawReviews, restaurant)
   const merged = mergeReviews(restaurant.reviews ?? [], mapped)
   const withPhotos = await attachReviewPhotos(merged, restaurant.slug)

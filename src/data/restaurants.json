@@ -2847,5 +2847,100 @@
     "imageUrl": "/photos/adelaide-rundle-mall/place.jpg",
     "lat": -34.922821,
     "lng": 138.6051046
+  },
+  {
+    "id": "mcd-023",
+    "slug": "delancey-essex-nyc",
+    "name": "McDonald's Delancey & Essex",
+    "city": "New York",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "googleMapsUrl": "https://www.google.com/maps/place/McDonald's/@40.71883,-73.988281,17z/data=!3m1!4b1!4m6!3m5!1s0x89c258e16718c55d:0xdfb83684e6939f4b!8m2!3d40.71883!4d-73.988281",
+    "placeId": "https://maps.app.goo.gl/8QMYT7aMEvfWbttT6",
+    "lat": 40.71883,
+    "lng": -73.988281,
+    "reviews": [
+      {
+        "id": "mcd-023-r-1raaqhb",
+        "text": "Every time i come here the sweet tea is sour and not fresh. This is extreme health hazard that needs to be addressed because you wouldn’t know unless you consume it without ice. The tea is supposed to be brewed fresh every daily with a time stamp, i bet if you go in there you will see time stamps from previous days.",
+        "author": "Kayla Freeman",
+        "date": "2026-02-15",
+        "rating": 1,
+        "funnyRank": 1,
+        "sourceUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT213elRFWlZialJJWVc5Sk1XNW9SRGwzVWxkTk4yYxAB!2m1!1s0x0:0xdfb83684e6939f4b!3m1!1s2@1:CAIQACodChtycF9oOmwzTEZVbjRIYW9JMW5oRDl3UldNN2c%7C%7C?hl=en"
+      },
+      {
+        "id": "mcd-023-r-12nhw3c",
+        "text": "At first I ordered a McCrispy without beacons. But they add the beacons. Then I changed the order said can you give me without bacons now they gave me without ketchup as well. Super slow service and wired behavior they have. They even don’t know how to treat a customer at the city. That’s really wired",
+        "author": "Labiba Tasnim",
+        "date": "2025-09-15",
+        "rating": 1,
+        "funnyRank": 2,
+        "sourceUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2t4eVQwaE5hRlZtU2pGcFJUSXpNa2htYm0xMExWRRAB!2m1!1s0x0:0xdfb83684e6939f4b!3m1!1s2@1:CAIQACodChtycF9oOkxyT0hNaFVmSjFpRTIzMkhmbm10LVE%7C%7C?hl=en"
+      },
+      {
+        "id": "mcd-023-r-nz41l8",
+        "text": "Needs better management. Super slow even when it was barely any customers inside. Lots of workers just standing around. Waited inside for like 30 minutes so I assumed maybe they were cooking it fresh but the food came out lukewarm. Corporate needs to fix this place.",
+        "author": "Katerina P",
+        "date": "2025-11-15",
+        "rating": 1,
+        "funnyRank": 3,
+        "sourceUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2xvMGVqRmtkRVZ2WjJSeFVIbFpUa1ZTWWtsdVdHYxAB!2m1!1s0x0:0xdfb83684e6939f4b!3m1!1s2@1:CAIQACodChtycF9oOlo0ejFkdEVvZ2RxUHlZTkVSYkluWGc%7C%7C?hl=en"
+      },
+      {
+        "id": "mcd-023-r-1emovex",
+        "text": "Unfortunate. Completely unfortunate to whoever may be seen at this McDonalds location.. Staff is extremely slow and forgetful of most items in each order whilst the people waiting for orders brawl in their drunkenness. I can’t totally blame …",
+        "author": "Ryder Peters",
+        "date": "2025-09-10",
+        "rating": 1,
+        "funnyRank": 4,
+        "sourceUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT204NGIwSTNOa3BUVEZkd1VrVm1VVWxNUm5RemNrRRAB!2m1!1s0x0:0xdfb83684e6939f4b!3m1!1s2@1:CAIQACodChtycF9oOm84b0I3NkpTTFdwUkVmUUlMRnQzckE%7C%7C?hl=en"
+      },
+      {
+        "id": "mcd-023-r-15gw434",
+        "text": "As someone who’s gone to this mcdonald’s my whole life, I’m currently going through the effects of food poisoning because of this mcdonald. I ordered a triple cheeseburger, fries, and 10 piece for me and my family to share. We all woke up …",
+        "author": "li",
+        "date": "2025-09-10",
+        "rating": 1,
+        "funnyRank": 5,
+        "sourceUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2tOTmNYbE9VSFUwYldkZmJIbGlZMFIwT0hBMk0wRRAB!2m1!1s0x0:0xdfb83684e6939f4b!3m1!1s2@1:CAIQACodChtycF9oOkNNcXlOUHU0bWdfbHliY0R0OHA2M0E%7C%7C?hl=en"
+      },
+      {
+        "id": "mcd-023-r-1hpusvq",
+        "text": "Completely rude I ask about three time can I order at the cash register a lady told me he’s coming three times and never came. I waited almost an hour before somebody ask is the register open then he finally came. And I still never got to …",
+        "author": "Dayshawn Davis",
+        "date": "2025-05-20",
+        "rating": 1,
+        "funnyRank": 6,
+        "sourceUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sChdDSUhNMG9nS0VJQ0FnSUNMd3RyVnZBRRAB!2m1!1s0x0:0xdfb83684e6939f4b!3m1!1s2@1:CIHM0ogKEICAgICLwtrVvAE%7C%7C?hl=en"
+      },
+      {
+        "id": "mcd-023-r-15uf1co",
+        "text": "We just came here with my family after a later night school event (9pm).  It took 30 minutes.  30.  Thirty minutes from ordering off the kiosk to get 4 simple meals, 2 being happy meals.  My kids were so hungry as it was their first meal …",
+        "author": "Malee Sebag",
+        "date": "2025-11-15",
+        "rating": 1,
+        "funnyRank": 7,
+        "sourceUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT21sR2ExUTVPRE5uY1RGWGIweHNiRVZpV0hCWVJWRRAB!2m1!1s0x0:0xdfb83684e6939f4b!3m1!1s2@1:CAIQACodChtycF9oOmlGa1Q5ODNncTFXb0xsbEViWHBYRVE%7C%7C?hl=en"
+      },
+      {
+        "id": "mcd-023-r-n5j6k2",
+        "text": "1/5 stars - McDonald's, you're better than this! I'm not expecting gourmet food, but I do expect my order to be right. Unfortunately, the DoorDash/UberEats team handling online orders needs some serious improvement. Orders get messed up …",
+        "author": "Sparkle Rivera",
+        "date": "2025-10-20",
+        "rating": 1,
+        "funnyRank": 8,
+        "sourceUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT25WNlRHdElVbFZRYTFGc2NUazVlVFZoTFVNemNrRRAB!2m1!1s0x0:0xdfb83684e6939f4b!3m1!1s2@1:CAIQACodChtycF9oOnV6TGtIUlVQa1FscTk5eTVhLUMzckE%7C%7C?hl=en"
+      },
+      {
+        "id": "mcd-023-r-ck61i5",
+        "text": "They gave me bacon when I ordered 4 piece chicken nugget",
+        "author": "Grapplebigman",
+        "date": "2026-01-20",
+        "rating": 1,
+        "funnyRank": 9,
+        "sourceUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2pkNWMyVldUMjh3VldFeVZYTk1SbFZPU25aRWFGRRAB!2m1!1s0x0:0xdfb83684e6939f4b!3m1!1s2@1:CAIQACodChtycF9oOjd5c2VWT28wVWEyVXNMRlVOSnZEaFE%7C%7C?hl=en"
+      }
+    ]
   }
 ]
