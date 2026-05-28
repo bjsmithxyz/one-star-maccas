@@ -18,6 +18,20 @@ export function RestaurantPage() {
       : `Not Found — ${SITE_NAME}`
   }, [restaurant])
 
+  useEffect(() => {
+    const hash = window.location.hash.slice(1)
+    if (!hash) return
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(hash)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [restaurant?.slug])
+
   if (!restaurant) {
     return <Navigate to="/404" replace />
   }
@@ -48,7 +62,7 @@ export function RestaurantPage() {
           <RandomButton
             excludeSlug={restaurant.slug}
             size="sm"
-            label="Another Random"
+            label="More"
           />
         </div>
 

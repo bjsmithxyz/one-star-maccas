@@ -28,19 +28,24 @@ export function ReviewCard({
   const imageUrl = getReviewImageUrl(review)
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border-2 border-mcd-charcoal/10 bg-white shadow-sm transition hover:-translate-y-1 hover:border-mcd-red/30 hover:shadow-lg">
+    <article
+      id={review.id}
+      className="group relative scroll-mt-24 rounded-2xl border-2 border-mcd-charcoal/10 bg-white shadow-sm transition hover:-translate-y-1 hover:border-mcd-red/30 hover:shadow-lg"
+    >
       {imageUrl && (
-        <img
-          src={imageUrl}
-          alt={`Photo from ${review.author}'s review`}
-          className="aspect-[4/3] w-full object-cover"
-        />
+        <div className="overflow-hidden rounded-t-2xl">
+          <img
+            src={imageUrl}
+            alt={`Photo from ${review.author}'s review`}
+            className="aspect-[4/3] w-full object-cover"
+          />
+        </div>
       )}
 
-      <div className="relative p-5 sm:p-6">
+      <div className="relative px-5 pb-5 pt-7 sm:px-6 sm:pb-6 sm:pt-8">
         <span
           aria-hidden
-          className="absolute -top-3 left-4 font-display text-5xl leading-none text-mcd-gold"
+          className="pointer-events-none absolute left-4 top-1 font-display text-5xl leading-none text-mcd-gold"
         >
           "
         </span>
