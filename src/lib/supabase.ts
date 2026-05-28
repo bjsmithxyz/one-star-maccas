@@ -46,6 +46,38 @@ export type ReactionPayload = {
   mine: string[]
 }
 
+export type TopReactedReview = {
+  reviewId: string
+  totalReactions: number
+}
+
+export async function fetchTopReactedReviews(
+  limit = 3,
+): Promise<TopReactedReview[]> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return []
+
+  const { data, error } = await supabase.rpc('get_top_reacted_reviews', {
+    p_limit: limit,
+  })
+
+  if (error) throw error
+  if (!Array.isArray(data)) return []
+
+  return data
+    .map((entry) => {
+      const row = entry as { review_id?: string; total_reactions?: number }
+      if (!row.review_id || typeof row.total_reactions !== 'number') {
+        return null
+      }
+      return {
+        reviewId: row.review_id,
+        totalReactions: row.total_reactions,
+      }
+    })
+    .filter((entry): entry is TopReactedReview => entry !== null)
+}
+
 export async function fetchReviewReactions(
   reviewId: string,
 ): Promise<ReactionPayload | null> {

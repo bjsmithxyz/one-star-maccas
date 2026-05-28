@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Layout } from '../components/Layout'
 import { RandomButton } from '../components/RandomButton'
+import { ReactionLeaderboard } from '../components/ReactionLeaderboard'
 import { ReviewCard } from '../components/ReviewCard'
 import { SITE_NAME } from '../constants/branding'
 import { getFeaturedReviews, getReviewSourceUrl, getSiteStats } from '../data'
@@ -41,6 +42,8 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      <ReactionLeaderboard />
 
       <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
         <div className="mb-6">

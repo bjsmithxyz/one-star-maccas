@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { getSafeImageUrl } from '../data'
+import { getReviewImageUrl } from '../data'
 import { ReviewReactions } from './ReviewReactions'
 import { SafeExternalLink } from './SafeExternalLink'
 import type { Review, Restaurant } from '../types'
@@ -25,7 +25,7 @@ export function ReviewCard({
   showLocation = false,
   sourceUrl,
 }: ReviewCardProps) {
-  const imageUrl = getSafeImageUrl(review.imageUrl)
+  const imageUrl = getReviewImageUrl(review)
 
   return (
     <article className="group relative overflow-hidden rounded-2xl border-2 border-mcd-charcoal/10 bg-white shadow-sm transition hover:-translate-y-1 hover:border-mcd-red/30 hover:shadow-lg">

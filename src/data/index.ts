@@ -1,11 +1,12 @@
 import restaurantsData from './restaurants.json'
-import type { FeaturedReview, Restaurant, SiteStats } from '../types'
+import type { FeaturedReview, Restaurant, Review, SiteStats } from '../types'
 import {
   sanitizeGoogleReviewUrl,
   sanitizeGoogleUrl,
   sanitizeImageUrl,
   sanitizeSlug,
 } from '../lib/security'
+import { reviewOwnsImageUrl } from '../lib/review-images'
 
 const restaurants = restaurantsData as Restaurant[]
 
@@ -62,8 +63,27 @@ export function getFeaturedReviews(limit = 12): FeaturedReview[] {
     .slice(0, limit)
 }
 
+export { reviewOwnsImageUrl } from '../lib/review-images'
+
 export function getReviewSourceUrl(review: { sourceUrl: string }): string {
   return sanitizeGoogleReviewUrl(review.sourceUrl)
+}
+
+export function getReviewById(reviewId: string): FeaturedReview | undefined {
+  for (const restaurant of restaurants) {
+    const review = restaurant.reviews.find((item) => item.id === reviewId)
+    if (review) {
+      return { ...review, restaurant }
+    }
+  }
+  return undefined
+}
+
+export function getReviewImageUrl(
+  review: Pick<Review, 'id' | 'imageUrl'>,
+): string {
+  if (!reviewOwnsImageUrl(review)) return ''
+  return getSafeImageUrl(review.imageUrl)
 }
 
 export function getSafeGoogleMapsUrl(

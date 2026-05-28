@@ -1,7 +1,8 @@
 import type { Restaurant, Review } from '../types'
+import { reviewOwnsImageUrl } from '../lib/review-images'
 
 export function getReviewsWithImages(restaurant: Restaurant): Review[] {
-  return restaurant.reviews.filter((review) => review.imageUrl)
+  return restaurant.reviews.filter((review) => reviewOwnsImageUrl(review))
 }
 
 export function getRandomReviewWithImage(restaurant: Restaurant): Review | undefined {

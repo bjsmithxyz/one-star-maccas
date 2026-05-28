@@ -17,8 +17,9 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { dedupeReviewsBySource, stableReviewId } from './lib/review-id.mjs'
 import { loadEnvFile } from './lib/load-env.mjs'
-import { collectSecretsFromEnv, redactSecrets } from './lib/redact-secrets.mjs'
+import { redactSecrets, collectSecretsFromEnv } from './lib/redact-secrets.mjs'
 import { downloadImage } from './lib/download-image.mjs'
+import { reviewOwnsImageUrl } from './fix-review-images.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -92,6 +93,11 @@ function rankReviews(reviews) {
     }))
 }
 
+function pickReviewImageUrl(review) {
+  if (!reviewOwnsImageUrl(review)) return undefined
+  return review.imageUrl
+}
+
 function mergeReviews(existing, incoming) {
   const merged = [...existing]
 
@@ -106,7 +112,7 @@ function mergeReviews(existing, incoming) {
     merged[index] = {
       ...current,
       text: review.text.length > current.text.length ? review.text : current.text,
-      imageUrl: current.imageUrl || review.imageUrl,
+      imageUrl: pickReviewImageUrl(current) || pickReviewImageUrl(review),
       _photoUrl: current._photoUrl || review._photoUrl,
     }
   }

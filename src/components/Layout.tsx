@@ -65,10 +65,10 @@ export function Layout({ children, excludeSlug }: LayoutProps) {
           href={GITHUB_REPO_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-5 inline-flex items-center gap-2 font-semibold text-mcd-charcoal transition hover:text-mcd-red"
+          aria-label="View source on GitHub"
+          className="mt-5 inline-flex text-mcd-charcoal transition hover:text-mcd-red"
         >
           <GitHubIcon />
-          View source on GitHub
         </a>
       </footer>
     </div>

@@ -105,6 +105,7 @@ Discord-style reaction bar on each review: clown emojis + 😂, with a **+** pic
 1. Open your project SQL editor and run both migrations in order:
    - [`supabase/migrations/20260527120000_reactions.sql`](supabase/migrations/20260527120000_reactions.sql)
    - [`supabase/migrations/20260528120000_reactions_security.sql`](supabase/migrations/20260528120000_reactions_security.sql)
+   - [`supabase/migrations/20260528140000_top_reacted_reviews.sql`](supabase/migrations/20260528140000_top_reacted_reviews.sql)
 2. Copy the **anon/public** key from Project Settings → API
 3. Add to `.env`:
 

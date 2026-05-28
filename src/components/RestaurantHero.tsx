@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { Restaurant } from '../types'
-import { getSafeGoogleMapsUrl, getSafeImageUrl } from '../data'
 import { getRandomReviewWithImage } from '../data/hero'
+import { getReviewImageUrl, getSafeGoogleMapsUrl, getSafeImageUrl } from '../data'
 import { SafeExternalLink } from './SafeExternalLink'
 
 type RestaurantHeroProps = {
@@ -14,7 +14,9 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
     [restaurant.slug, restaurant.reviews],
   )
   const placeImageUrl = getSafeImageUrl(restaurant.imageUrl)
-  const overlayImageUrl = getSafeImageUrl(reviewOverlay?.imageUrl)
+  const overlayImageUrl = reviewOverlay
+    ? getReviewImageUrl(reviewOverlay)
+    : ''
   const googleMapsUrl = getSafeGoogleMapsUrl(restaurant)
 
   return (
