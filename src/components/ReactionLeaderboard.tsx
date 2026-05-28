@@ -7,7 +7,7 @@ import {
   isSupabaseConfigured,
   type TopReactedReview,
 } from '../lib/supabase'
-import { firstSentence, hasMoreAfterFirstSentence } from '../lib/text'
+import { hasMoreAfterLeaderboardPreview, leaderboardPreview } from '../lib/text'
 
 const RANK_LABELS = ['🥇', '🥈', '🥉']
 
@@ -68,22 +68,24 @@ export function ReactionLeaderboard() {
         const top = await fetchTopReactedReviews(3)
         if (cancelled) return
 
-        const resolved = top
-          .map((entry) => {
-            const featured = getReviewById(entry.reviewId)
-            if (!featured) return null
+        const resolved = (
+          await Promise.all(
+            top.map(async (entry) => {
+              const featured = await getReviewById(entry.reviewId)
+              if (!featured) return null
 
-            return {
-              ...entry,
-              reviewText: featured.text,
-              author: featured.author,
-              restaurantSlug: featured.restaurant.slug,
-              restaurantLabel: `${featured.restaurant.flag} ${featured.restaurant.city}`,
-              imageUrl: getReviewImageUrl(featured),
-              placeImageUrl: getSafeImageUrl(featured.restaurant.imageUrl),
-            }
-          })
-          .filter((entry): entry is LeaderboardEntry => entry !== null)
+              return {
+                ...entry,
+                reviewText: featured.text,
+                author: featured.author,
+                restaurantSlug: featured.restaurant.slug,
+                restaurantLabel: `${featured.restaurant.flag} ${featured.restaurant.city}`,
+                imageUrl: getReviewImageUrl(featured),
+                placeImageUrl: getSafeImageUrl(featured.restaurant.imageUrl),
+              }
+            }),
+          )
+        ).filter((entry): entry is LeaderboardEntry => entry !== null)
 
         setEntries(resolved)
       } catch (error) {
@@ -122,8 +124,8 @@ export function ReactionLeaderboard() {
       ) : entries.length > 0 ? (
         <div className="grid gap-4 sm:grid-cols-3">
           {entries.map((entry, index) => {
-            const preview = firstSentence(entry.reviewText)
-            const showReadMore = hasMoreAfterFirstSentence(entry.reviewText)
+            const preview = leaderboardPreview(entry.reviewText)
+            const showReadMore = hasMoreAfterLeaderboardPreview(entry.reviewText)
             const reviewHref = `/r/${entry.restaurantSlug}#${entry.reviewId}`
 
             return (

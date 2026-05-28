@@ -15,15 +15,23 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { dedupeReviewsBySource, stableReviewId } from './lib/review-id.mjs'
+import {
+  dedupeReviewsBySource,
+  mergeReviewRecords,
+  reviewSourceKey,
+  stableReviewId,
+} from './lib/review-id.mjs'
 import { loadEnvFile } from './lib/load-env.mjs'
 import { redactSecrets, collectSecretsFromEnv } from './lib/redact-secrets.mjs'
 import { downloadImage } from './lib/download-image.mjs'
 import { reviewOwnsImageUrl } from './fix-review-images.mjs'
+import {
+  readRestaurants,
+  writeRestaurants,
+} from './lib/restaurant-data.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
-const DATA_PATH = path.join(ROOT, 'src/data/restaurants.json')
 const PHOTOS_DIR = path.join(ROOT, 'public/photos')
 const OUTSCRAPER_BASE = 'https://api.outscraper.cloud/google-maps-reviews'
 
@@ -33,6 +41,7 @@ const API_KEY = process.env.OUTSCRAPER_API_KEY
 
 const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
+const onlyEmpty = args.includes('--only-empty')
 const slugArg = args.find((arg) => arg.startsWith('--slug='))?.split('=')[1]
 const reviewsLimit = Number(
   args.find((arg) => arg.startsWith('--reviews-limit='))?.split('=')[1] ?? 50,
@@ -98,11 +107,12 @@ function pickReviewImageUrl(review) {
   return review.imageUrl
 }
 
-function mergeReviews(existing, incoming) {
+function mergeReviews(existing, incoming, restaurantId) {
   const merged = [...existing]
 
   for (const review of incoming) {
-    const index = merged.findIndex((item) => item.sourceUrl === review.sourceUrl)
+    const key = reviewSourceKey(review.sourceUrl)
+    const index = merged.findIndex((item) => reviewSourceKey(item.sourceUrl) === key)
     if (index === -1) {
       merged.push(review)
       continue
@@ -110,14 +120,13 @@ function mergeReviews(existing, incoming) {
 
     const current = merged[index]
     merged[index] = {
-      ...current,
-      text: review.text.length > current.text.length ? review.text : current.text,
+      ...mergeReviewRecords(current, review),
       imageUrl: pickReviewImageUrl(current) || pickReviewImageUrl(review),
       _photoUrl: current._photoUrl || review._photoUrl,
     }
   }
 
-  return rankReviews(merged)
+  return rankReviews(dedupeReviewsBySource(merged, restaurantId))
 }
 
 async function fetchOutscraperReviews(placeId) {
@@ -222,7 +231,7 @@ async function ingestRestaurant(restaurant) {
 
   const rawReviews = await fetchOutscraperReviews(placeQuery)
   const mapped = mapOutscraperReviews(rawReviews, restaurant)
-  const merged = mergeReviews(restaurant.reviews ?? [], mapped)
+  const merged = mergeReviews(restaurant.reviews ?? [], mapped, restaurant.id)
   const withPhotos = await attachReviewPhotos(merged, restaurant.slug)
 
   const newCount = withPhotos.length - (restaurant.reviews?.length ?? 0)
@@ -246,12 +255,16 @@ async function ingestRestaurant(restaurant) {
 async function main() {
   ensureApiKey()
 
-  const restaurants = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'))
+  const restaurants = readRestaurants()
   let targets = slugArg
     ? restaurants.filter((restaurant) => restaurant.slug === slugArg)
     : [...restaurants].sort(
         (a, b) => (a.reviews?.length ?? 0) - (b.reviews?.length ?? 0),
       )
+
+  if (onlyEmpty && !slugArg) {
+    targets = targets.filter((restaurant) => (restaurant.reviews?.length ?? 0) === 0)
+  }
 
   const maxByQuota = Math.max(1, Math.floor(quotaBudget / reviewsLimit))
   const effectiveLimit = Number.isFinite(locationLimit)
@@ -281,12 +294,23 @@ async function main() {
 
   const updatedBySlug = new Map()
 
+  function writeOutput() {
+    const output = restaurants.map(
+      (restaurant) => updatedBySlug.get(restaurant.slug) ?? restaurant,
+    )
+    writeRestaurants(output)
+  }
+
   for (const restaurant of targets) {
     try {
       updatedBySlug.set(restaurant.slug, await ingestRestaurant(restaurant))
     } catch (error) {
       console.error(`  Failed: ${error.message}`)
       updatedBySlug.set(restaurant.slug, restaurant)
+    }
+
+    if (!dryRun) {
+      writeOutput()
     }
 
     await sleep(delayMs)
@@ -323,8 +347,7 @@ async function main() {
     return
   }
 
-  fs.writeFileSync(DATA_PATH, `${JSON.stringify(output, null, 2)}\n`)
-  console.log(`Updated ${DATA_PATH}`)
+  console.log('Updated restaurants data and rebuilt split index files')
 }
 
 main().catch((error) => {

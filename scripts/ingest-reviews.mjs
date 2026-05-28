@@ -13,11 +13,14 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { loadEnvFile } from './lib/load-env.mjs'
 import { collectSecretsFromEnv, redactSecrets } from './lib/redact-secrets.mjs'
-import { stableReviewId } from './lib/review-id.mjs'
+import { dedupeReviewsBySource, stableReviewId } from './lib/review-id.mjs'
+import {
+  readRestaurants,
+  writeRestaurants,
+} from './lib/restaurant-data.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
-const DATA_PATH = path.join(ROOT, 'src/data/restaurants.json')
 const PHOTOS_DIR = path.join(ROOT, 'public/photos')
 
 loadEnvFile(path.join(ROOT, '.env'))
@@ -283,19 +286,8 @@ function rankReviews(reviews) {
     }))
 }
 
-function mergeReviews(existing, incoming) {
-  const bySource = new Map(existing.map((review) => [review.sourceUrl, { ...review }]))
-
-  for (const review of incoming) {
-    const current = bySource.get(review.sourceUrl)
-    if (current) {
-      if (review.imageUrl) current.imageUrl = review.imageUrl
-      continue
-    }
-    bySource.set(review.sourceUrl, review)
-  }
-
-  return rankReviews([...bySource.values()])
+function mergeReviews(existing, incoming, restaurantId) {
+  return rankReviews(dedupeReviewsBySource([...existing, ...incoming], restaurantId))
 }
 
 async function resolvePlace(restaurant) {
@@ -348,7 +340,7 @@ async function ingestRestaurant(restaurant) {
     place.reviews ?? [],
   )
 
-  const merged = mergeReviews(restaurant.reviews ?? [], incomingWithPhotos)
+  const merged = mergeReviews(restaurant.reviews ?? [], incomingWithPhotos, restaurant.id)
   const reviewsWithPhotos = await attachReviewPhotos(
     merged,
     restaurant.slug,
@@ -386,7 +378,7 @@ async function ingestRestaurant(restaurant) {
 async function main() {
   ensureApiKey()
 
-  const restaurants = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'))
+  const restaurants = readRestaurants()
   const targets = slugArg
     ? restaurants.filter((restaurant) => restaurant.slug === slugArg)
     : restaurants
@@ -435,8 +427,8 @@ async function main() {
     return
   }
 
-  fs.writeFileSync(DATA_PATH, `${JSON.stringify(output, null, 2)}\n`)
-  console.log(`Updated ${DATA_PATH}`)
+  writeRestaurants(output)
+  console.log('Updated restaurants data and rebuilt split index files')
 }
 
 main().catch((error) => {

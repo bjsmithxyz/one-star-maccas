@@ -24,6 +24,11 @@ export type Restaurant = {
   reviews: Review[]
 }
 
+/** Restaurant metadata without review bodies (from restaurants-index.json). */
+export type RestaurantMeta = Omit<Restaurant, 'reviews'> & {
+  reviewCount: number
+}
+
 export type FeaturedReview = Review & {
   restaurant: Restaurant
 }

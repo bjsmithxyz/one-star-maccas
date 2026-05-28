@@ -1,11 +1,11 @@
 import L from 'leaflet'
 import { Link } from 'react-router-dom'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-import type { Restaurant } from '../types'
+import type { RestaurantMeta } from '../types'
 import 'leaflet/dist/leaflet.css'
 
 type RestaurantMapProps = {
-  restaurants: Restaurant[]
+  restaurants: RestaurantMeta[]
 }
 
 function pinIcon(reviewCount: number) {
@@ -37,7 +37,7 @@ export function RestaurantMap({ restaurants }: RestaurantMapProps) {
         <Marker
           key={restaurant.slug}
           position={[restaurant.lat!, restaurant.lng!]}
-          icon={pinIcon(restaurant.reviews.length)}
+          icon={pinIcon(restaurant.reviewCount)}
         >
           <Popup>
             <div className="min-w-[180px] font-body text-sm text-mcd-charcoal">
@@ -47,8 +47,8 @@ export function RestaurantMap({ restaurants }: RestaurantMapProps) {
               </p>
               <p className="mt-1 text-mcd-charcoal/70">{restaurant.name}</p>
               <p className="mt-2 font-semibold text-mcd-red">
-                {restaurant.reviews.length} one-star review
-                {restaurant.reviews.length === 1 ? '' : 's'}
+                {restaurant.reviewCount} one-star review
+                {restaurant.reviewCount === 1 ? '' : 's'}
               </p>
               <Link
                 to={`/r/${restaurant.slug}`}

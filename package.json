@@ -12,7 +12,11 @@
     "ingest:dry": "node scripts/ingest-reviews.mjs --dry-run",
     "ingest:outscraper": "node scripts/ingest-outscraper.mjs",
     "ingest:outscraper:dry": "node scripts/ingest-outscraper.mjs --dry-run",
+    "discover:locations": "node scripts/discover-locations.mjs",
+    "discover:locations:dry": "node scripts/discover-locations.mjs --dry-run",
     "geocode": "node scripts/geocode-locations.mjs",
+    "data:split": "node scripts/split-restaurants-data.mjs",
+    "recover:outscraper": "node scripts/recover-outscraper-archives.mjs",
     "security:check": "node scripts/security-check.mjs"
   },
   "dependencies": {

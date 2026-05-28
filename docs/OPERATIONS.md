@@ -17,6 +17,16 @@ Hero counts (`getSiteStats()` in `src/data/index.ts`) are derived from JSON — 
 
 ---
 
+## Ingest status (paused)
+
+**Paid ingest is paused** until explicitly re-enabled. Do not run `npm run ingest`, `npm run ingest:outscraper`, or `discover-locations` without owner approval.
+
+**Nine locations intentionally have no reviews** (keep them in JSON, leave `reviews` empty):
+
+`hobart-salamanca`, `christchurch-cashel`, `canary-wharf-london`, `camden-london`, `times-square-nyc-alt`, `union-square-nyc`, `warsaw-nowy-swiat`, `budapest-andrassy`, `athens-syntagma`
+
+---
+
 ## Routine: ship a content update
 
 ```bash
