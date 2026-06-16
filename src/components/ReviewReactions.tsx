@@ -35,7 +35,7 @@ function ReactionButton({
           : 'border-mcd-charcoal/10 bg-[#f2f3f5] text-mcd-charcoal/80 hover:border-mcd-charcoal/20 hover:bg-[#e3e5e8]'
       }`}
     >
-      <ReactionIcon variant={id} size={24} />
+      <ReactionIcon variant={id} size={26} className="shrink-0 drop-shadow-sm" />
       {count > 0 && <span>{count}</span>}
     </button>
   )
