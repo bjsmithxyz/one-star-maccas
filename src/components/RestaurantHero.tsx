@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import type { Restaurant } from '../types'
 import { getRandomReviewWithImage } from '../data/hero'
 import { getReviewImageUrl, getSafeGoogleMapsUrl, getSafeImageUrl } from '../data'
+import { formatAuthorInitials } from '../lib/author'
 import { SafeExternalLink } from './SafeExternalLink'
 
 type RestaurantHeroProps = {
@@ -18,6 +19,9 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
     ? getReviewImageUrl(reviewOverlay)
     : ''
   const googleMapsUrl = getSafeGoogleMapsUrl(restaurant)
+  const authorLabel = reviewOverlay
+    ? formatAuthorInitials(reviewOverlay.author)
+    : 'reviewer'
 
   return (
     <section className="overflow-hidden rounded-3xl border-4 border-mcd-charcoal bg-white shadow-[0_8px_0_#27251f]">
@@ -35,7 +39,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
         {overlayImageUrl && (
           <img
             src={overlayImageUrl}
-            alt={`Photo from a 1-star review by ${reviewOverlay?.author ?? 'reviewer'}`}
+            alt={`Photo from a 1-star review by ${authorLabel}`}
             className="absolute inset-0 h-full w-full object-cover opacity-45"
           />
         )}
@@ -55,7 +59,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
             </p>
             {overlayImageUrl && (
               <p className="mt-3 text-xs font-medium uppercase tracking-wide text-white/60">
-                Review photo by {reviewOverlay?.author}
+                Review photo by {authorLabel}
               </p>
             )}
           </div>

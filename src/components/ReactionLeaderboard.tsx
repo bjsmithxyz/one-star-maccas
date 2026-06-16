@@ -8,6 +8,7 @@ import {
   type TopReactedReview,
 } from '../lib/supabase'
 import { hasMoreAfterLeaderboardPreview, leaderboardPreview } from '../lib/text'
+import { formatAuthorInitials } from '../lib/author'
 
 const RANK_LABELS = ['🥇', '🥈', '🥉']
 
@@ -30,12 +31,13 @@ function LeaderboardImage({
   author: string
 }) {
   const src = reviewImageUrl || placeImageUrl
+  const authorLabel = formatAuthorInitials(author)
 
   if (src) {
     return (
       <img
         src={src}
-        alt={reviewImageUrl ? `Photo from ${author}'s review` : ''}
+        alt={reviewImageUrl ? `Photo from ${authorLabel}'s review` : ''}
         className={`aspect-[2/1] w-full object-cover ${reviewImageUrl ? '' : 'opacity-90'}`}
       />
     )
@@ -157,7 +159,7 @@ export function ReactionLeaderboard() {
                   <div className="mt-auto flex items-end justify-between gap-3 border-t border-mcd-charcoal/10 pt-3">
                     <div className="min-w-0">
                       <p className="truncate font-semibold text-sm text-mcd-charcoal sm:text-base">
-                        {entry.author}
+                        {formatAuthorInitials(entry.author)}
                       </p>
                       <p className="truncate text-sm font-medium text-mcd-charcoal/75 sm:text-base">
                         {entry.restaurantLabel}

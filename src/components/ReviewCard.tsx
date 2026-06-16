@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { getReviewImageUrl } from '../data'
+import { formatAuthorInitials } from '../lib/author'
 import { ReviewReactions } from './ReviewReactions'
 import { SafeExternalLink } from './SafeExternalLink'
 import type { Review, Restaurant } from '../types'
@@ -27,6 +28,8 @@ export function ReviewCard({
 }: ReviewCardProps) {
   const imageUrl = getReviewImageUrl(review)
 
+  const authorLabel = formatAuthorInitials(review.author)
+
   return (
     <article
       id={review.id}
@@ -36,7 +39,7 @@ export function ReviewCard({
         <div className="overflow-hidden rounded-t-2xl">
           <img
             src={imageUrl}
-            alt={`Photo from ${review.author}'s review`}
+            alt={`Photo from ${authorLabel}'s review`}
             className="aspect-[4/3] w-full object-cover"
           />
         </div>
@@ -60,7 +63,7 @@ export function ReviewCard({
         </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-mcd-charcoal/70">
-          <span className="font-medium text-mcd-charcoal">{review.author}</span>
+          <span className="font-medium text-mcd-charcoal">{authorLabel}</span>
           <span aria-hidden>·</span>
           <time dateTime={review.date}>{formatDate(review.date)}</time>
         </div>
