@@ -32,7 +32,7 @@ export function ReviewCard({
   return (
     <article
       id={review.id}
-      className="group relative scroll-mt-24 rounded-2xl border-2 border-mcd-charcoal/10 bg-white shadow-sm transition hover:-translate-y-1 hover:border-mcd-red/30 hover:shadow-lg content-visibility-auto"
+      className="group relative scroll-mt-24 rounded-2xl border border-mcd-charcoal/10 bg-white shadow-sm transition hover:border-mcd-red/25 hover:shadow-md content-visibility-auto"
     >
       {imageUrl && (
         <div className="overflow-hidden rounded-t-2xl">
@@ -47,16 +47,9 @@ export function ReviewCard({
       )}
 
       <div className="relative px-5 pb-5 pt-7 sm:px-6 sm:pb-6 sm:pt-8">
-        <span
-          aria-hidden
-          className="pointer-events-none absolute left-4 top-1 font-display text-5xl leading-none text-mcd-gold"
-        >
-          "
-        </span>
-
-        <div className="mb-3 flex items-center gap-1 text-mcd-red" aria-label="1 star rating">
-          <span>★</span>
-          <span className="text-mcd-charcoal/25">★★★★</span>
+        <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-mcd-red" aria-label="1 star rating">
+          <span aria-hidden>★</span>
+          <span>1 star</span>
         </div>
 
         <p className="relative z-10 text-base leading-relaxed text-mcd-charcoal sm:text-lg">
@@ -69,7 +62,7 @@ export function ReviewCard({
           <time dateTime={review.date}>{formatDate(review.date)}</time>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-3">
+        <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-mcd-charcoal/8 pt-4">
           {showLocation && restaurant && (
             <Link
               to={`/r/${restaurant.slug}`}

@@ -23,7 +23,7 @@ export function MapPage() {
             Global map
           </h1>
           <p className="mx-auto mt-3 max-w-2xl text-sm text-mcd-charcoal/70 sm:text-base">
-            Tap a pin to read the misery.
+            Explore locations and read the reviews.
           </p>
         </div>
 

@@ -24,7 +24,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
     : 'reviewer'
 
   return (
-    <section className="overflow-hidden rounded-3xl border-4 border-mcd-charcoal bg-white shadow-[0_8px_0_#27251f]">
+    <section className="overflow-hidden rounded-2xl border border-mcd-charcoal/10 bg-white shadow-sm">
       <div className="relative min-h-[240px] sm:min-h-[280px]">
         {placeImageUrl ? (
           <img
@@ -58,9 +58,6 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
             <h1 className="font-display text-3xl leading-tight text-white sm:text-4xl">
               {restaurant.name}
             </h1>
-            <p className="mt-2 text-white/80">
-              Their finest 1-star masterpieces
-            </p>
             {overlayImageUrl && (
               <p className="mt-3 text-xs font-medium uppercase tracking-wide text-white/60">
                 Review photo by {authorLabel}
@@ -74,7 +71,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
         <div className="border-t border-mcd-charcoal/10 px-6 py-4 sm:px-8">
           <SafeExternalLink
             href={googleMapsUrl}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-mcd-charcoal/15 px-4 py-2 text-sm font-semibold text-mcd-charcoal transition hover:border-mcd-red hover:text-mcd-red"
+            className="inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold text-mcd-charcoal/70 transition hover:bg-mcd-charcoal/5 hover:text-mcd-red"
           >
             View on Google Maps ↗
           </SafeExternalLink>

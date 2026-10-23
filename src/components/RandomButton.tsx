@@ -13,7 +13,7 @@ type RandomButtonProps = {
 export function RandomButton({
   excludeSlug,
   size = 'lg',
-  label = 'Random McDonald\'s',
+  label = 'Surprise me',
   iconOnly = false,
   className = '',
 }: RandomButtonProps) {
@@ -34,33 +34,33 @@ export function RandomButton({
   }
 
   const sizeClasses = iconOnly
-    ? 'p-3.5'
+    ? 'p-3'
     : size === 'lg'
-      ? 'px-8 py-4 text-lg sm:text-xl'
-      : 'px-4 py-2 text-sm'
+      ? 'px-6 py-3.5 text-base sm:text-lg'
+      : 'px-3.5 py-2 text-sm'
 
   const diceClasses = iconOnly
-    ? 'text-3xl leading-none'
-    : 'text-xl'
+    ? 'text-2xl leading-none'
+    : 'text-base'
 
-  const accessibleLabel = iconOnly ? 'Another random McDonald\'s' : label
+  const accessibleLabel = iconOnly ? 'Another review' : label
 
   return (
     <div className={`relative inline-flex ${className}`}>
       {flashing && (
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full bg-white globe-flash"
+          className="pointer-events-none absolute inset-0 rounded-xl bg-white globe-flash"
         />
       )}
       <button
         type="button"
         onClick={handleClick}
         aria-label={accessibleLabel}
-        className={`inline-flex items-center justify-center gap-2 rounded-full border-4 border-mcd-charcoal bg-mcd-red font-display uppercase tracking-wide text-white shadow-[0_6px_0_#27251f] transition hover:-translate-y-0.5 hover:shadow-[0_8px_0_#27251f] active:translate-y-1 active:shadow-[0_2px_0_#27251f] ${sizeClasses} ${spinning ? 'random-spin' : ''}`}
+        className={`inline-flex items-center justify-center gap-2 rounded-xl bg-mcd-red font-bold tracking-wide text-white shadow-lg shadow-mcd-red/20 transition hover:-translate-y-0.5 hover:bg-mcd-red/90 hover:shadow-xl hover:shadow-mcd-red/25 active:translate-y-0 ${sizeClasses} ${spinning ? 'random-spin' : ''}`}
       >
         <span aria-hidden className={diceClasses}>
-          🎲
+          ✦
         </span>
         {!iconOnly && label}
       </button>

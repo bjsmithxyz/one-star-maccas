@@ -90,7 +90,7 @@ export function RestaurantPage() {
           to="/"
           className="mb-6 inline-flex items-center gap-1 text-sm font-semibold text-mcd-charcoal/70 transition hover:text-mcd-red"
         >
-          ← Back to all reviews
+          ← All reviews
         </Link>
 
         <RestaurantHero restaurant={restaurant} />
@@ -99,7 +99,7 @@ export function RestaurantPage() {
           <h2 className="font-display text-2xl text-mcd-charcoal">
             {reviews.length === 0
               ? 'No reviews yet'
-              : `${reviews.length} one-star masterpiece${reviews.length === 1 ? '' : 's'}`}
+              : `${reviews.length} review${reviews.length === 1 ? '' : 's'}`}
           </h2>
           <RandomButton excludeSlug={restaurant.slug} iconOnly />
         </div>
@@ -117,8 +117,7 @@ export function RestaurantPage() {
         ) : (
           <div className="mt-6 rounded-2xl border-2 border-dashed border-mcd-charcoal/15 bg-white/70 px-6 py-10 text-center">
             <p className="text-sm text-mcd-charcoal/70">
-              No curated reviews for this location yet. Check Google Maps for
-              live 1-star comments.
+              No curated reviews yet.
             </p>
             {googleMapsUrl && (
               <SafeExternalLink

@@ -16,9 +16,11 @@
 
   body {
     @apply bg-mcd-cream text-mcd-charcoal font-body antialiased;
-    background-image:
-      radial-gradient(circle at 20% 20%, rgb(255 199 44 / 0.18), transparent 28%),
-      radial-gradient(circle at 80% 0%, rgb(218 41 28 / 0.12), transparent 24%);
+    background-image: radial-gradient(
+      circle at 50% -20%,
+      rgb(255 199 44 / 0.14),
+      transparent 42%
+    );
     min-height: 100vh;
   }
 

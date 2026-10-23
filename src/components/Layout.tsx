@@ -21,18 +21,18 @@ type LayoutProps = {
 
 export function Layout({ children, excludeSlug }: LayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-40 border-b-4 border-mcd-red bg-mcd-gold/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-40 border-b border-mcd-charcoal/10 bg-mcd-cream/90 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link
             to="/"
             className="group flex items-center gap-2 text-mcd-charcoal transition hover:opacity-80"
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-mcd-red text-xl text-white shadow-md">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-mcd-red text-lg text-white shadow-sm">
               ★
             </span>
             <div>
-              <p className="font-display text-lg leading-none sm:text-xl">
+              <p className="font-display text-base leading-none sm:text-lg">
                 {SITE_NAME}
               </p>
             </div>
@@ -41,7 +41,7 @@ export function Layout({ children, excludeSlug }: LayoutProps) {
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               to="/map"
-              className="rounded-full border-2 border-mcd-charcoal/15 px-3 py-2 text-sm font-semibold text-mcd-charcoal transition hover:border-mcd-red hover:text-mcd-red sm:px-4"
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-mcd-charcoal/75 transition hover:bg-white hover:text-mcd-red sm:px-4"
             >
               Map
             </Link>
@@ -56,11 +56,8 @@ export function Layout({ children, excludeSlug }: LayoutProps) {
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-mcd-charcoal/10 bg-white/60 px-4 py-8 text-center text-sm text-mcd-charcoal/70 sm:px-6">
-        <p className="mx-auto max-w-2xl leading-relaxed">
-          Fan parody site — not affiliated with McDonald&apos;s Corporation.
-          Reviews are publicly posted user content, curated for entertainment.
-        </p>
+      <footer className="border-t border-mcd-charcoal/10 px-4 py-6 text-center text-xs text-mcd-charcoal/55 sm:px-6">
+        <p>Fan parody site · Not affiliated with McDonald&apos;s</p>
         <a
           href={GITHUB_REPO_URL}
           target="_blank"
