@@ -1,0 +1,18 @@
+[
+  {
+    "slug": "central-park-nyc",
+    "name": "McDonald's Central Park",
+    "city": "New York",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "googleMapsUrl": "https://maps.google.com/?cid=..."
+  },
+  {
+    "slug": "example-existing-location",
+    "name": "McDonald's Example",
+    "city": "London",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "placeId": "ChIJ..."
+  }
+]

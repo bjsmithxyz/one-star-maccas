@@ -4,7 +4,8 @@
  *
  * Usage:
  *   GOOGLE_MAPS_API_KEY=... npm run ingest
- *   GOOGLE_MAPS_API_KEY=... npm run ingest -- --slug times-square-nyc
+ *   GOOGLE_MAPS_API_KEY=... npm run ingest -- --slug=times-square-nyc
+ *   GOOGLE_MAPS_API_KEY=... npm run ingest -- --input=scripts/places-targets.json
  *   GOOGLE_MAPS_API_KEY=... npm run ingest -- --dry-run
  */
 
@@ -30,7 +31,20 @@ const API_KEY = process.env.GOOGLE_MAPS_API_KEY
 const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
 const slugArg = args.find((arg) => arg.startsWith('--slug='))?.split('=')[1]
+const inputArg = args.find((arg) => arg.startsWith('--input='))?.split('=').slice(1).join('=')
 const delayMs = Number(args.find((arg) => arg.startsWith('--delay='))?.split('=')[1] ?? 250)
+
+if (args.includes('--help') || args.includes('-h')) {
+  console.log(`Usage: npm run ingest -- [options]
+
+Options:
+  --slug=...              Refresh one existing restaurant
+  --input=...             Import or refresh a JSON target list
+  --delay=250             Delay between locations in milliseconds
+  --dry-run               Preview without writing data
+  --help                  Show this help`)
+  process.exit(0)
+}
 
 function safeMessage(message) {
   return redactSecrets(String(message), collectSecretsFromEnv())
@@ -105,7 +119,7 @@ async function getPlaceDetailsNew(placeId) {
     headers: {
       'X-Goog-Api-Key': API_KEY,
       'X-Goog-FieldMask':
-        'id,displayName,googleMapsUri,googleMapsLinks,reviews,rating,userRatingCount,photos',
+        'id,displayName,googleMapsUri,googleMapsLinks,reviews,rating,userRatingCount,photos,location',
     },
   })
 }
@@ -362,8 +376,17 @@ async function ingestRestaurant(restaurant) {
     console.warn('  No 1-star reviews returned (API returns up to 5 reviews).')
   }
 
+  const latitude =
+    api === 'new' ? place.location?.latitude : place.geometry?.location?.lat
+  const longitude =
+    api === 'new' ? place.location?.longitude : place.geometry?.location?.lng
+
   return {
     ...restaurant,
+    name:
+      place.displayName?.text ??
+      place.name ??
+      restaurant.name,
     placeId,
     imageUrl,
     googleMapsUrl:
@@ -371,17 +394,95 @@ async function ingestRestaurant(restaurant) {
       place.googleMapsLinks?.placeUri ??
       place.url ??
       restaurant.googleMapsUrl,
+    ...(Number.isFinite(latitude) && Number.isFinite(longitude)
+      ? { lat: latitude, lng: longitude }
+      : {}),
     reviews: reviewsWithPhotos,
   }
+}
+
+function nextRestaurantId(restaurants) {
+  const max = restaurants.reduce((highest, restaurant) => {
+    const match = /^mcd-(\d+)$/.exec(restaurant.id ?? '')
+    return match ? Math.max(highest, Number(match[1])) : highest
+  }, 0)
+  return `mcd-${String(max + 1).padStart(3, '0')}`
+}
+
+function readImportTargets(restaurants) {
+  if (!inputArg) return undefined
+
+  const inputPath = path.resolve(ROOT, inputArg)
+  if (!fs.existsSync(inputPath)) {
+    throw new Error(`Import file not found: ${inputArg}`)
+  }
+
+  const targets = JSON.parse(fs.readFileSync(inputPath, 'utf8'))
+  if (!Array.isArray(targets) || targets.length === 0) {
+    throw new Error('Import file must contain a non-empty JSON array')
+  }
+
+  const seen = new Set()
+  const working = [...restaurants]
+  const imported = []
+
+  for (const [index, target] of targets.entries()) {
+    const slug = String(target.slug ?? '').trim()
+    if (!/^[a-z0-9-]+$/.test(slug)) {
+      throw new Error(`Target ${index + 1} has an invalid slug`)
+    }
+    if (seen.has(slug)) throw new Error(`Duplicate slug in import file: ${slug}`)
+    seen.add(slug)
+
+    const existing = restaurants.find((restaurant) => restaurant.slug === slug)
+    if (existing) {
+      imported.push({ ...existing, ...target, slug, reviews: existing.reviews ?? [] })
+      continue
+    }
+
+    for (const field of ['name', 'city', 'country', 'flag']) {
+      if (!String(target[field] ?? '').trim()) {
+        throw new Error(`New target ${slug} is missing ${field}`)
+      }
+    }
+
+    const created = {
+      id: nextRestaurantId(working),
+      slug,
+      name: target.name.trim(),
+      city: target.city.trim(),
+      country: target.country.trim(),
+      flag: target.flag.trim(),
+      googleMapsUrl: target.googleMapsUrl,
+      placeId: target.placeId,
+      lat: target.lat,
+      lng: target.lng,
+      reviews: [],
+    }
+    working.push(created)
+    imported.push(created)
+  }
+
+  return imported
 }
 
 async function main() {
   ensureApiKey()
 
   const restaurants = readRestaurants()
-  const targets = slugArg
-    ? restaurants.filter((restaurant) => restaurant.slug === slugArg)
+  const importedTargets = readImportTargets(restaurants)
+  const sourceRestaurants = importedTargets
+    ? [
+        ...restaurants,
+        ...importedTargets.filter(
+          (target) => !restaurants.some((restaurant) => restaurant.slug === target.slug),
+        ),
+      ]
     : restaurants
+  const targets = importedTargets ??
+    (slugArg
+      ? restaurants.filter((restaurant) => restaurant.slug === slugArg)
+      : restaurants)
 
   if (targets.length === 0) {
     console.error(slugArg ? `No restaurant found for slug: ${slugArg}` : 'No restaurants found')
@@ -403,12 +504,12 @@ async function main() {
     await sleep(delayMs)
   }
 
-  const output = restaurants.map(
+  const output = sourceRestaurants.map(
     (restaurant) => updatedBySlug.get(restaurant.slug) ?? restaurant,
   )
 
   const added = output.reduce((sum, restaurant, index) => {
-    const before = restaurants[index].reviews?.length ?? 0
+    const before = sourceRestaurants[index].reviews?.length ?? 0
     const after = restaurant.reviews?.length ?? 0
     return sum + Math.max(0, after - before)
   }, 0)

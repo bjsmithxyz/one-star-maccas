@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { Layout } from '../components/Layout'
-import { RandomButton } from '../components/RandomButton'
 import { RestaurantHero } from '../components/RestaurantHero'
 import { ReviewCard } from '../components/ReviewCard'
 import { SITE_NAME } from '../constants/branding'
@@ -95,13 +94,12 @@ export function RestaurantPage() {
 
         <RestaurantHero restaurant={restaurant} />
 
-        <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8">
           <h2 className="font-display text-2xl text-mcd-charcoal">
             {reviews.length === 0
               ? 'No reviews yet'
               : `${reviews.length} review${reviews.length === 1 ? '' : 's'}`}
           </h2>
-          <RandomButton excludeSlug={restaurant.slug} iconOnly />
         </div>
 
         {reviews.length > 0 ? (

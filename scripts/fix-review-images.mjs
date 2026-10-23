@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Remove review imageUrl values that don't belong to that review
- * (e.g. shared legacy Outscraper paths reused across multiple reviews).
+ * (e.g. shared legacy paths reused across multiple reviews).
  */
 
 import fs from 'node:fs'

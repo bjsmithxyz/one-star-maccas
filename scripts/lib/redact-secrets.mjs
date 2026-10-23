@@ -11,8 +11,5 @@ export function redactSecrets(text, secrets = []) {
 }
 
 export function collectSecretsFromEnv() {
-  return [
-    process.env.GOOGLE_MAPS_API_KEY,
-    process.env.OUTSCRAPER_API_KEY,
-  ].filter(Boolean)
+  return [process.env.GOOGLE_MAPS_API_KEY].filter(Boolean)
 }

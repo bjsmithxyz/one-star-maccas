@@ -4,7 +4,7 @@ The worst 1-star Google reviews from McDonald's around the world.
 
 Live site: https://bjsmithxyz.github.io/one-star-maccas/
 
-**Maintainers:** see [docs/OPERATIONS.md](docs/OPERATIONS.md) for how to add locations, ingest reviews, and deploy. Paid Outscraper/Google ingest is currently paused; nine map locations are intentionally empty (see Operations).
+**Maintainers:** see [docs/OPERATIONS.md](docs/OPERATIONS.md) for how to add locations, ingest reviews, and deploy. Paid Google ingest is currently paused; nine map locations are intentionally empty (see Operations).
 
 ## License
 
@@ -42,10 +42,27 @@ npm run preview
 | `src/data/` | JSON dataset + helpers (`getSiteStats`, `getMapRestaurants`) |
 | `src/components/` | Review cards, Leaflet map, hero |
 | `scripts/ingest-reviews.mjs` | Google Places ingest (placeId, up to 5 reviews/location) |
-| `scripts/ingest-outscraper.mjs` | Outscraper ingest (more reviews + photos) |
+| `scripts/add-restaurant.mjs` | Add and validate one restaurant entry |
+| `scripts/places-targets.example.json` | Batch Places API import template |
 | `scripts/geocode-locations.mjs` | Add `lat`/`lng` via OpenStreetMap Nominatim |
 | `scripts/generate-seo.mjs` | Generate `robots.txt` and `sitemap.xml` |
 | `public/photos/` | Downloaded place and review images |
+
+## Import restaurants and reviews in batches
+
+For approved content updates, use the official Google Places API importer. It resolves each location, adds new restaurant metadata, collects the available 1-star reviews, downloads place/review photos, deduplicates reviews, and rebuilds the split data files.
+
+Copy the template, replace the examples, and use a dry run first:
+
+```bash
+cp scripts/places-targets.example.json scripts/places-targets.json
+npm run ingest:dry -- --input=scripts/places-targets.json
+npm run ingest -- --input=scripts/places-targets.json
+```
+
+Each target needs a unique `slug`, `name`, `city`, `country`, and `flag`, plus a `placeId` or Google Maps URL. Existing slugs can be refreshed from the same file. Keep `scripts/places-targets.json` local; it is ignored by git.
+
+The importer uses `GOOGLE_MAPS_API_KEY` from `.env`, keeps API keys out of the frontend, and never fabricates missing reviews. Google Places returns up to five reviews per location, so additional reviews require a later refresh or manual curation. Paid API use requires owner approval.
 
 ## Ingest real reviews
 
@@ -70,16 +87,14 @@ npm run ingest -- --slug=times-square-nyc
 npm run ingest:dry -- --slug=times-square-nyc
 ```
 
-### Outscraper (more reviews + photos)
+### Google Places importer
 
-[Outscraper](https://outscraper.com/google-maps-reviews-api/) fetches many more low-rated reviews and includes `review_img_url` for hero overlays. Free tier: **500 reviews/month**.
+The importer uses Places API (New) with a legacy fallback. It merges by `sourceUrl`, assigns stable review IDs, downloads available photos to `public/photos/{slug}/`, and ranks reviews by length (`funnyRank`).
 
 ```bash
-npm run ingest:outscraper -- --reviews-limit=10 --quota-budget=490
-npm run ingest:outscraper:dry -- --slug=times-square-nyc
+npm run ingest -- --input=scripts/places-targets.json
+npm run ingest:dry -- --slug=times-square-nyc
 ```
-
-Both ingest scripts merge by `sourceUrl`, assign stable review IDs, download photos to `public/photos/{slug}/`, and rank by review length (`funnyRank`).
 
 ### Geocode locations
 
@@ -99,11 +114,28 @@ The build generates `robots.txt` and a sitemap covering the home page, map, and 
 
 ## Site stats
 
-Hero line (e.g. `22 restaurants · 269 reviews · view map`) comes from `getSiteStats()` in `src/data/index.ts` and updates automatically after ingest + rebuild.
+Homepage counts come from `getSiteStats()` in `src/data/index.ts` and update automatically after ingest or adding a restaurant.
+
+## Add a restaurant
+
+Use the entry script instead of editing the data files by hand. It validates the slug, required fields, duplicate IDs/slugs, and Google Maps URL, then regenerates the split data files.
+
+```bash
+npm run restaurant:add -- \\
+  --slug=central-park-nyc \\
+  --name="McDonald's Central Park" \\
+  --city="New York" \\
+  --country="United States" \\
+  --flag=🇺🇸 \\
+  --google-maps-url="https://maps.google.com/?cid=..." \\
+  --place-id=ChIJ...
+```
+
+Use `--dry-run` to preview the entry. Add coordinates with `--lat` and `--lng`, or run `npm run geocode` afterwards. New entries start with an empty review list.
 
 ## Add reviews manually
 
-Edit [`src/data/restaurants.json`](src/data/restaurants.json). Each review must be a real Google review with a live link.
+Edit the restaurant's review data in `src/data/restaurants.json` only when a review ingest is not suitable. Each review must be a real Google review with a live link.
 
 ```json
 {
@@ -128,7 +160,7 @@ This is a **static site** with no backend. Attack surface is small, but keep the
 ### Secrets
 
 - **Never commit `.env`** — it is gitignored. Only placeholders live in `.env.example`.
-- API keys (`GOOGLE_MAPS_API_KEY`, `OUTSCRAPER_API_KEY`) are used **only in Node ingest scripts**, never bundled into the frontend.
+- `GOOGLE_MAPS_API_KEY` is used **only in Node ingest scripts**, never bundled into the frontend.
 - Restrict Google Cloud keys to Places API only; use IP restriction for local ingest or a separate key per developer.
 - Rotate any key immediately if it is pasted into chat, committed by mistake, or exposed in a PR.
 

@@ -19,7 +19,7 @@ Hero counts (`getSiteStats()` in `src/data/index.ts`) are derived from JSON — 
 
 ## Ingest status (paused)
 
-**Paid ingest is paused** until explicitly re-enabled. Do not run `npm run ingest`, `npm run ingest:outscraper`, or `discover-locations` without owner approval.
+**Paid Google Places ingest is paused** until explicitly re-enabled. Do not run `npm run ingest` without owner approval.
 
 **Nine locations intentionally have no reviews** (keep them in JSON, leave `reviews` empty):
 
@@ -45,18 +45,23 @@ CI runs lint, security checks, and the build on pull requests. Pushes to `master
 
 ## Add a new restaurant
 
-1. **Append** an object to [`src/data/restaurants.json`](../src/data/restaurants.json):
-   - `id`: next `mcd-NNN` (three digits, zero-padded)
-   - `slug`: `[a-z0-9-]` only (URL: `/r/{slug}`)
-   - `name`, `city`, `country`, `flag`
-   - `googleMapsUrl`: HTTPS Google Maps place link
-   - `placeId`: Google Place ID, Maps short link, or leave empty until ingest
-   - `lat` / `lng`: required for map pin (run geocode or set manually)
-   - `reviews`: array (can start empty)
+1. **Add the location with the entry script** (this updates `restaurants.json`, the route index, and review index together):
+
+   ```bash
+   npm run restaurant:add -- \\
+     --slug=central-park-nyc \\
+     --name="McDonald's Central Park" \\
+     --city="New York" \\
+     --country="United States" \\
+     --flag=🇺🇸 \\
+     --google-maps-url="https://maps.google.com/?cid=..." \\
+     --place-id=ChIJ...
+   ```
+
+   Required fields are validated; use `--dry-run` to preview. Add `--lat` and `--lng` when known, or geocode afterwards.
 
 2. **Fill reviews** (pick one):
-   - **Outscraper** (recommended): more 1-star reviews + photos — [README § Outscraper](../README.md#outscraper-more-reviews--photos)
-   - **Google Places**: up to 5 reviews/location — [README § Google Places ingest](../README.md#google-places-ingest)
+   - **Google Places**: up to 5 reviews/location — [README § Google Places importer](../README.md#google-places-importer)
    - **Manual**: real text + `sourceUrl` per [README § Add reviews manually](../README.md#add-reviews-manually)
 
 3. **Geocode** if missing coordinates:
@@ -71,19 +76,45 @@ Review IDs must match `mcd-NNN-r-*` (use ingest scripts or `scripts/lib/review-i
 
 ---
 
+## Batch import new restaurants and reviews
+
+Create a local `scripts/places-targets.json` from the committed template, then preview and apply the official Google Places import:
+
+```bash
+cp scripts/places-targets.example.json scripts/places-targets.json
+# edit the target list
+npm run ingest:dry -- --input=scripts/places-targets.json
+npm run ingest -- --input=scripts/places-targets.json
+```
+
+The importer resolves each place, adds new restaurant metadata, collects available 1-star reviews, downloads allowed photos, deduplicates by source URL, and regenerates all data indexes. Keep the target file local and do not run this while paid ingest is paused without approval.
+
+Target format:
+
+```json
+{
+  "slug": "central-park-nyc",
+  "name": "McDonald's Central Park",
+  "city": "New York",
+  "country": "United States",
+  "flag": "🇺🇸",
+  "googleMapsUrl": "https://maps.google.com/?cid=..."
+}
+```
+
+Use an existing slug to refresh it. New slugs require name, city, country, flag, and either `placeId` or `googleMapsUrl`.
+
 ## Add reviews to an existing restaurant
 
 ```bash
 # Dry run first
-npm run ingest:outscraper:dry -- --slug=delancey-essex-nyc --reviews-limit=10
+npm run ingest:dry -- --slug=delancey-essex-nyc
 
 # Apply
-npm run ingest:outscraper -- --slug=delancey-essex-nyc --reviews-limit=10
+npm run ingest -- --slug=delancey-essex-nyc
 ```
 
-Scripts merge by `sourceUrl`, re-rank by text length (`funnyRank`), and write photos to `public/photos/{slug}/`.
-
-Outscraper accepts `placeId` or `googleMapsUrl` (including `maps.app.goo.gl` links).
+The importer merges by `sourceUrl`, re-ranks by text length (`funnyRank`), and writes available photos to `public/photos/{slug}/`. Google Places returns up to five reviews per location.
 
 ---
 
@@ -105,7 +136,7 @@ After code changes: `npm run build` locally; CI must pass on push.
 | Symptom | Check |
 | --- | --- |
 | Map missing pin | Restaurant needs numeric `lat` and `lng` |
-| Ingest can’t find place | Set `googleMapsUrl` or valid `placeId`; try Outscraper with Maps link |
+| Ingest can’t find place | Set a valid `googleMapsUrl` or `placeId`, then retry the Google Places importer |
 | Deploy failed | Actions log; run `npm run security:check` locally |
 
 ---
@@ -117,8 +148,9 @@ After code changes: `npm run build` locally; CI must pass on push.
 | `npm run dev` | Local dev server |
 | `npm run build` | Production build |
 | `npm run ingest` | Google Places ingest |
-| `npm run ingest:outscraper` | Outscraper ingest |
+| `npm run ingest -- ...` | Google Places import |
 | `npm run geocode` | Add lat/lng via Nominatim |
+| `npm run restaurant:add -- ...` | Validate and add one restaurant entry |
 | `npm run security:check` | Static security gates + `npm audit` (moderate+) |
 | `npm run seo:generate` | Generate `robots.txt` and `sitemap.xml` |
 
