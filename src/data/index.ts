@@ -1,7 +1,5 @@
 import restaurantsIndex from './restaurants-index.json'
-import reviewSlugById from './review-index.json'
 import type {
-  FeaturedReview,
   Restaurant,
   RestaurantMeta,
   Review,
@@ -16,14 +14,14 @@ import {
 import { reviewOwnsImageUrl } from '../lib/review-images'
 
 const restaurantMeta = restaurantsIndex as RestaurantMeta[]
-const reviewSlugIndex = reviewSlugById as Record<string, string>
-
 const reviewLoaders = import.meta.glob<Review[]>('./reviews/*.json', {
   import: 'default',
 })
 
 function metaToRestaurant(meta: RestaurantMeta, reviews: Review[]): Restaurant {
-  const { reviewCount: _reviewCount, ...rest } = meta
+  const rest = Object.fromEntries(
+    Object.entries(meta).filter(([key]) => key !== 'reviewCount'),
+  ) as Omit<RestaurantMeta, 'reviewCount'>
   return { ...rest, reviews }
 }
 
@@ -87,22 +85,6 @@ export { reviewOwnsImageUrl } from '../lib/review-images'
 
 export function getReviewSourceUrl(review: { sourceUrl: string }): string {
   return sanitizeGoogleReviewUrl(review.sourceUrl)
-}
-
-export async function getReviewById(
-  reviewId: string,
-): Promise<FeaturedReview | undefined> {
-  const slug = reviewSlugIndex[reviewId]
-  if (!slug) return undefined
-
-  const meta = getRestaurantMetaBySlug(slug)
-  if (!meta) return undefined
-
-  const reviews = await loadRestaurantReviews(slug)
-  const review = reviews.find((item) => item.id === reviewId)
-  if (!review) return undefined
-
-  return { ...review, restaurant: metaToRestaurant(meta, reviews) }
 }
 
 export function getReviewImageUrl(

@@ -13,38 +13,39 @@ import {
 } from '../data'
 import type { Restaurant } from '../types'
 import { SafeExternalLink } from '../components/SafeExternalLink'
+import { updatePageMetadata } from '../lib/seo'
 
 export function RestaurantPage() {
   const { slug } = useParams()
   const meta = slug ? getRestaurantMetaBySlug(slug) : undefined
   const [restaurant, setRestaurant] = useState<Restaurant | undefined>()
-  const [isLoading, setIsLoading] = useState(Boolean(meta))
+  const isLoading = Boolean(meta && restaurant?.slug !== meta.slug)
 
   useEffect(() => {
-    if (!meta) {
-      setRestaurant(undefined)
-      setIsLoading(false)
-      return
-    }
+    if (!meta) return
 
     let cancelled = false
-    setIsLoading(true)
 
     void loadRestaurantReviews(meta.slug).then((reviews) => {
       if (cancelled) return
       setRestaurant({ ...meta, reviews })
-      setIsLoading(false)
     })
 
     return () => {
       cancelled = true
     }
-  }, [meta?.slug])
+  }, [meta])
 
   useEffect(() => {
-    document.title = meta
-      ? `${meta.name} — ${SITE_NAME}`
-      : `Not Found — ${SITE_NAME}`
+    if (!meta) {
+      updatePageMetadata({ title: `Not Found — ${SITE_NAME}` })
+      return
+    }
+
+    updatePageMetadata({
+      title: `${meta.name} — ${SITE_NAME}`,
+      description: `Read curated one-star Google reviews from ${meta.name} in ${meta.city}, ${meta.country}.`,
+    })
   }, [meta])
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export function RestaurantPage() {
     })
 
     return () => window.cancelAnimationFrame(frame)
-  }, [restaurant?.slug, restaurant?.reviews.length])
+  }, [restaurant])
 
   if (!meta) {
     return <Navigate to="/404" replace />

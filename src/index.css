@@ -35,6 +35,11 @@
     font-family: var(--font-display);
   }
 
+  .content-visibility-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 320px;
+  }
+
   .review-stagger > * {
     animation: fade-up 0.45s ease both;
   }

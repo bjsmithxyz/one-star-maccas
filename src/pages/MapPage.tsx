@@ -1,9 +1,19 @@
+import { useEffect } from 'react'
 import { Layout } from '../components/Layout'
+import { SITE_NAME } from '../constants/branding'
 import { RestaurantMap } from '../components/RestaurantMap'
 import { getMapRestaurants } from '../data'
+import { updatePageMetadata } from '../lib/seo'
 
 export function MapPage() {
   const restaurants = getMapRestaurants()
+
+  useEffect(() => {
+    updatePageMetadata({
+      title: `Global Map — ${SITE_NAME}`,
+      description: 'Explore McDonald\'s locations with curated one-star reviews around the world.',
+    })
+  }, [])
 
   return (
     <Layout>

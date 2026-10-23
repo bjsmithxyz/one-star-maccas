@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { SITE_NAME } from './constants/branding'
+import { updatePageMetadata } from './lib/seo'
 import { HomePage, NotFoundPage } from './pages/HomePage'
 import { RestaurantPage } from './pages/RestaurantPage'
 
@@ -18,7 +19,7 @@ function MapPageFallback() {
 
 export default function App() {
   useEffect(() => {
-    document.title = SITE_NAME
+    updatePageMetadata({ title: SITE_NAME })
   }, [])
 
   const basename = import.meta.env.BASE_URL.replace(/\/$/, '')

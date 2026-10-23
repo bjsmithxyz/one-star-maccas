@@ -43,33 +43,6 @@ try {
       fail(`${file} is tracked by git — env files must stay local`)
     }
   }
-
-  const secretPatterns = [
-    /SUPABASE_SERVICE_ROLE/,
-    /VITE_SUPABASE_SERVICE/,
-    /service_role['"]?\s*[:=]/i,
-  ]
-
-  const skipSecretScan = new Set([
-    'README.md',
-    'docs/OPERATIONS.md',
-    'scripts/security-check.mjs',
-  ])
-
-  for (const file of tracked) {
-    if (file.startsWith('supabase/migrations/')) continue
-    if (skipSecretScan.has(file)) continue
-
-    const contents = readIfExists(file)
-    if (!contents) continue
-
-    for (const pattern of secretPatterns) {
-      if (pattern.test(contents)) {
-        fail(`${file} references a Supabase service role key — use anon key only in the app`)
-        break
-      }
-    }
-  }
 } catch {
   // Not a git repo or git unavailable — skip tracked-file checks
 }
@@ -80,10 +53,6 @@ if (
   /eyJ[A-Za-z0-9+/=_-]{20,}/.test(envExample)
 ) {
   fail('.env.example appears to contain a real API key — use placeholders only')
-}
-
-if (/SERVICE_ROLE\s*=/.test(envExample)) {
-  fail('.env.example must not reference Supabase service role keys')
 }
 
 const srcFiles = []
@@ -113,8 +82,7 @@ for (const file of srcFiles) {
     'DEV',
     'PROD',
     'MODE',
-    'VITE_SUPABASE_URL',
-    'VITE_SUPABASE_ANON_KEY',
+    'VITE_CARTO_API_KEY',
   ])
   for (const match of envMatches) {
     const key = match.split('.').pop()
@@ -127,40 +95,6 @@ for (const file of srcFiles) {
 const safeExternalLink = read('src/components/SafeExternalLink.tsx')
 if (!safeExternalLink.includes('sanitizeExternalUrl')) {
   fail('SafeExternalLink must sanitize href via sanitizeExternalUrl')
-}
-
-const securityMigration = read(
-  'supabase/migrations/20260528120000_reactions_security.sql',
-)
-if (!securityMigration.includes('drop policy if exists "reaction_votes_public_read"')) {
-  fail('Missing reactions security migration that drops public read policy')
-}
-if (!securityMigration.includes('revoke all on table public.reaction_votes')) {
-  fail('Missing reactions security migration that revokes direct table access')
-}
-
-const clownOnlyMigration = read(
-  'supabase/migrations/20260528150000_clown_only_reactions.sql',
-)
-if (!clownOnlyMigration.includes('get_top_reacted_reviews')) {
-  fail('Clown-only migration must update get_top_reacted_reviews')
-}
-if (!clownOnlyMigration.includes("'laugh', 'sad', 'confused', 'shocked', 'dead', 'sick'")) {
-  fail('Clown-only migration must whitelist clown reaction IDs')
-}
-
-const topReactedMigration = read(
-  'supabase/migrations/20260528140000_top_reacted_reviews.sql',
-)
-if (!topReactedMigration.includes('grant execute on function public.get_top_reacted_reviews')) {
-  fail('Top reacted migration must grant execute to anon/authenticated')
-}
-
-const cleanupMigration = read(
-  'supabase/migrations/20260528160000_cleanup_legacy_reaction_votes.sql',
-)
-if (!cleanupMigration.includes('delete from public.reaction_votes')) {
-  fail('Legacy reaction cleanup migration must delete non-clown reaction rows')
 }
 
 const downloadImageLib = read('scripts/lib/download-image.mjs')

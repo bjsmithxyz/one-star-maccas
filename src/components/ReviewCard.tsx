@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { getReviewImageUrl } from '../data'
 import { formatAuthorInitials } from '../lib/author'
-import { ReviewReactions } from './ReviewReactions'
 import { SafeExternalLink } from './SafeExternalLink'
 import type { Review, Restaurant } from '../types'
 
@@ -33,13 +32,15 @@ export function ReviewCard({
   return (
     <article
       id={review.id}
-      className="group relative scroll-mt-24 rounded-2xl border-2 border-mcd-charcoal/10 bg-white shadow-sm transition hover:-translate-y-1 hover:border-mcd-red/30 hover:shadow-lg"
+      className="group relative scroll-mt-24 rounded-2xl border-2 border-mcd-charcoal/10 bg-white shadow-sm transition hover:-translate-y-1 hover:border-mcd-red/30 hover:shadow-lg content-visibility-auto"
     >
       {imageUrl && (
         <div className="overflow-hidden rounded-t-2xl">
           <img
             src={imageUrl}
             alt={`Photo from ${authorLabel}'s review`}
+            loading="lazy"
+            decoding="async"
             className="aspect-[4/3] w-full object-cover"
           />
         </div>
@@ -88,7 +89,6 @@ export function ReviewCard({
           )}
         </div>
 
-        <ReviewReactions reviewId={review.id} />
       </div>
     </article>
   )

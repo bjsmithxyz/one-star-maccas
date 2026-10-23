@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
+    "build": "npm run seo:generate && tsc -b && vite build && cp dist/index.html dist/404.html",
     "lint": "eslint .",
     "preview": "vite preview",
     "ingest": "node scripts/ingest-reviews.mjs",
@@ -17,10 +17,10 @@
     "geocode": "node scripts/geocode-locations.mjs",
     "data:split": "node scripts/split-restaurants-data.mjs",
     "recover:outscraper": "node scripts/recover-outscraper-archives.mjs",
-    "security:check": "node scripts/security-check.mjs"
+    "security:check": "node scripts/security-check.mjs",
+    "seo:generate": "node scripts/generate-seo.mjs"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.106.2",
     "leaflet": "^1.9.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",

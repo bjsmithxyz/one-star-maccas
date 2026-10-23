@@ -68,9 +68,3 @@ export function sanitizeSlug(value: string | undefined): string {
   if (!value) return ''
   return /^[a-z0-9-]+$/.test(value) ? value : ''
 }
-
-export const REVIEW_ID_PATTERN = /^mcd-[0-9]{3}-r-[a-z0-9]+$/
-
-export function isValidReviewId(value: string): boolean {
-  return REVIEW_ID_PATTERN.test(value)
-}

@@ -29,10 +29,6 @@ export type RestaurantMeta = Omit<Restaurant, 'reviews'> & {
   reviewCount: number
 }
 
-export type FeaturedReview = Review & {
-  restaurant: Restaurant
-}
-
 export type SiteStats = {
   /** Every McDonald's location in the dataset */
   locationCount: number

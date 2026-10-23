@@ -1,4 +1,4 @@
-# 1 star maccas
+# One Star Maccas
 
 The worst 1-star Google reviews from McDonald's around the world.
 
@@ -40,10 +40,11 @@ npm run preview
 | --- | --- |
 | `src/pages/` | Home, restaurant detail, map, 404 |
 | `src/data/` | JSON dataset + helpers (`getSiteStats`, `getMapRestaurants`) |
-| `src/components/` | Review cards, reactions, Leaflet map, hero |
+| `src/components/` | Review cards, Leaflet map, hero |
 | `scripts/ingest-reviews.mjs` | Google Places ingest (placeId, up to 5 reviews/location) |
 | `scripts/ingest-outscraper.mjs` | Outscraper ingest (more reviews + photos) |
 | `scripts/geocode-locations.mjs` | Add `lat`/`lng` via OpenStreetMap Nominatim |
+| `scripts/generate-seo.mjs` | Generate `robots.txt` and `sitemap.xml` |
 | `public/photos/` | Downloaded place and review images |
 
 ## Ingest real reviews
@@ -90,39 +91,15 @@ Adds `lat`/`lng` to each restaurant for the map page (~1 Nominatim request/sec).
 
 ## Map
 
-Interactive world map at `/map` using [Leaflet](https://leafletjs.com/) + OpenStreetMap tiles (no API key). Loaded lazily so the home page stays light.
+Interactive world map at `/map` using [Leaflet](https://leafletjs.com/) + CARTO raster tiles. CARTO requires a Basemaps API key: add `VITE_CARTO_API_KEY=...` to your local `.env`, and add the repository secret `VITE_CARTI_API_KEY` for production. The workflow maps that secret to the frontend variable. The key is public in the browser bundle, so restrict it to your site domains in CARTO. Google Places ingest uses the separate `GOOGLE_MAPS_API_KEY`. Loaded lazily so the home page stays light.
+
+## SEO
+
+The build generates `robots.txt` and a sitemap covering the home page, map, and every restaurant route. Page titles, descriptions, canonical URLs, and Open Graph metadata update for each route.
 
 ## Site stats
 
 Hero line (e.g. `22 restaurants · 269 reviews · view map`) comes from `getSiteStats()` in `src/data/index.ts` and updates automatically after ingest + rebuild.
-
-## Reactions
-
-Discord-style reaction bar on each review: six custom clown reactions. Counts are **shared globally** via [Supabase](https://supabase.com/) when configured.
-
-### Supabase setup
-
-1. Open your project SQL editor and run all migrations in filename order:
-   - [`supabase/migrations/20260527120000_reactions.sql`](supabase/migrations/20260527120000_reactions.sql)
-   - [`supabase/migrations/20260528120000_reactions_security.sql`](supabase/migrations/20260528120000_reactions_security.sql)
-   - [`supabase/migrations/20260528140000_top_reacted_reviews.sql`](supabase/migrations/20260528140000_top_reacted_reviews.sql)
-   - [`supabase/migrations/20260528150000_clown_only_reactions.sql`](supabase/migrations/20260528150000_clown_only_reactions.sql)
-   - [`supabase/migrations/20260528160000_cleanup_legacy_reaction_votes.sql`](supabase/migrations/20260528160000_cleanup_legacy_reaction_votes.sql)
-2. Copy the **anon/public** key from Project Settings → API
-3. Add to `.env`:
-
-```bash
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-```
-
-4. For GitHub Pages, add the same values as **environment secrets** on the `github-pages` environment:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-
-Each browser gets a random UUID in `localStorage` so you can toggle reactions without signing in. Counts refresh every ~45 seconds (and on tab focus) for all visitors. Direct table access is revoked — reads and writes go through RPC functions only.
-
-**Known limitation:** without user sign-in, a determined actor could still stuff votes with random voter IDs. The security migration prevents enumerating other voters' IDs and reading raw vote rows.
 
 ## Add reviews manually
 
@@ -151,7 +128,6 @@ This is a **static site** with no backend. Attack surface is small, but keep the
 ### Secrets
 
 - **Never commit `.env`** — it is gitignored. Only placeholders live in `.env.example`.
-- **Never use a Supabase `service_role` key** in the frontend, CI, or `.env.example`. Only the **anon** key belongs in `VITE_SUPABASE_ANON_KEY`.
 - API keys (`GOOGLE_MAPS_API_KEY`, `OUTSCRAPER_API_KEY`) are used **only in Node ingest scripts**, never bundled into the frontend.
 - Restrict Google Cloud keys to Places API only; use IP restriction for local ingest or a separate key per developer.
 - Rotate any key immediately if it is pasted into chat, committed by mistake, or exposed in a PR.
@@ -164,9 +140,7 @@ This is a **static site** with no backend. Attack surface is small, but keep the
   - External links → Google domains only
   - Images → `/photos/*` paths or `https://*.googleusercontent.com`
   - Route slugs → `[a-z0-9-]` only
-  - Review IDs → `mcd-NNN-r-*` pattern before Supabase RPC calls
 - `index.html` sets CSP, `Referrer-Policy`, and `X-Content-Type-Options`. Production builds strip dev-only `ws://localhost` CSP entries.
-- Reaction votes are stored in Supabase; the anon key is public by design. Writes go through `toggle_review_reaction` RPC only — no direct table access for anon users.
 
 Run automated checks locally:
 
@@ -176,28 +150,17 @@ npm run security:check
 
 This runs static checks plus `npm audit --audit-level=moderate`.
 
-### Rate limiting (Supabase reactions)
-
-Honk counts are anonymous and not rate-limited in-app. If RPC traffic or storage becomes a concern, add limits **outside** the React app:
-
-1. **Supabase Dashboard → Settings → API** — enable project-level rate limiting if available on your plan.
-2. **Supabase Edge Function** — wrap `toggle_review_reaction` behind a function that rate-limits by IP (e.g. token bucket in Redis or Upstash) before calling the RPC.
-3. **CDN / WAF** — Cloudflare (or similar) in front of `*.supabase.co` with per-IP rules on `/rest/v1/rpc/*` (advanced; test carefully so legit users aren’t blocked).
-4. **Database maintenance** — run [`20260528160000_cleanup_legacy_reaction_votes.sql`](supabase/migrations/20260528160000_cleanup_legacy_reaction_votes.sql) after the clown-only migration to drop orphaned emoji rows.
-
-For a fan site, dashboard rate limits plus occasional cleanup are usually enough unless counts become a target.
-
 ### CI / deploy
 
-- GitHub Actions runs `npm run security:check` (includes `npm audit`) before every build.
+- GitHub Actions runs `npm run lint`, `npm run security:check` (includes `npm audit`), and `npm run build` on pull requests.
+- Deployments use `npm ci`; action references are pinned to reviewed commit SHAs. Dependabot monitors npm and GitHub Actions updates.
 - Workflow uses minimal permissions (`contents: read`, `pages: write`).
-- Build injects `VITE_SUPABASE_*` from the `github-pages` environment secrets (anon key is public in the bundle by design).
 - Ingest scripts redact API keys from error output and allowlist remote image hosts before download.
 
 ### Data integrity
 
 - Ingest scripts dedupe reviews by `sourceUrl` and generate stable IDs (`scripts/lib/review-id.mjs`).
-- Do not add fabricated reviews or fake reaction counts.
+- Do not add fabricated reviews.
 
 ## Deploy
 

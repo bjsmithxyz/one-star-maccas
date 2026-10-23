@@ -1,6 +1,6 @@
 # Operations guide
 
-Internal runbook for updating **1 star maccas**. For setup, security, and Supabase details, see the [README](../README.md).
+Internal runbook for updating **One Star Maccas**. For setup and security details, see the [README](../README.md).
 
 Live site: https://bjsmithxyz.github.io/one-star-maccas/
 
@@ -10,8 +10,8 @@ Live site: https://bjsmithxyz.github.io/one-star-maccas/
 | --- | --- |
 | Frontend | Vite + React SPA, data from `src/data/restaurants.json` |
 | Deploy | Push to `master` → GitHub Actions → GitHub Pages |
-| Reactions | Optional Supabase RPC + anon key baked in at build time |
 | Ingest | Local Node scripts only; API keys stay in `.env` |
+| Map tiles | CARTO Basemaps API key via `VITE_CARTO_API_KEY` locally; `VITE_CARTI_API_KEY` repository secret in CI |
 
 Hero counts (`getSiteStats()` in `src/data/index.ts`) are derived from JSON — no manual counter edits.
 
@@ -37,7 +37,7 @@ git commit -m "..."
 git push origin master
 ```
 
-CI runs `security:check`, builds with `GITHUB_PAGES=true`, and deploys. Allow ~30s.
+CI runs lint, security checks, and the build on pull requests. Pushes to `master` build with `GITHUB_PAGES=true` and deploy. Allow ~30s.
 
 **Before pushing:** never commit `.env`. Review `git diff` for accidental keys.
 
@@ -67,7 +67,7 @@ CI runs `security:check`, builds with `GITHUB_PAGES=true`, and deploys. Allow ~3
 
 4. **Verify locally:** `npm run dev` → check `/r/{slug}` and `/map`.
 
-Review IDs must match `mcd-NNN-r-*` (use ingest scripts or `scripts/lib/review-id.mjs`). Supabase reactions reject other formats.
+Review IDs must match `mcd-NNN-r-*` (use ingest scripts or `scripts/lib/review-id.mjs`).
 
 ---
 
@@ -87,25 +87,12 @@ Outscraper accepts `placeId` or `googleMapsUrl` (including `maps.app.goo.gl` lin
 
 ---
 
-## Reactions / Supabase
-
-- Local: copy [`.env.example`](../.env.example) → `.env`, set `VITE_SUPABASE_*` (anon key only — never `service_role`)
-- Production: `github-pages` environment secrets (same var names)
-- SQL migrations: run **all** files in [`supabase/migrations/`](../supabase/migrations/) in filename order (five files through `20260528160000_cleanup_legacy_reaction_votes.sql`)
-
-Rate limiting options if RPC volume grows: see [README § Rate limiting](../README.md#rate-limiting-supabase-reactions).
-
-See [README § Reactions](../README.md#reactions) and [README § Security](../README.md#security).
-
----
-
 ## Change UI or behaviour
 
 | Change | Where |
 | --- | --- |
 | Pages / routing | `src/pages/`, `src/App.tsx` |
 | Review card, hero, map | `src/components/` |
-| Reaction emoji set | `src/constants/reactions.ts` (+ SQL whitelist in security migration) |
 | URL / slug validation | `src/lib/security.ts` |
 | CSP | `index.html`, production strip in `vite.config.ts` |
 
@@ -117,8 +104,6 @@ After code changes: `npm run build` locally; CI must pass on push.
 
 | Symptom | Check |
 | --- | --- |
-| Reactions don’t persist live | GitHub `github-pages` env secrets; migrations applied |
-| Reactions fail with `invalid review_id` | Review `id` must be `mcd-NNN-r-{hash}` from ingest |
 | Map missing pin | Restaurant needs numeric `lat` and `lng` |
 | Ingest can’t find place | Set `googleMapsUrl` or valid `placeId`; try Outscraper with Maps link |
 | Deploy failed | Actions log; run `npm run security:check` locally |
@@ -135,5 +120,6 @@ After code changes: `npm run build` locally; CI must pass on push.
 | `npm run ingest:outscraper` | Outscraper ingest |
 | `npm run geocode` | Add lat/lng via Nominatim |
 | `npm run security:check` | Static security gates + `npm audit` (moderate+) |
+| `npm run seo:generate` | Generate `robots.txt` and `sitemap.xml` |
 
 Full option lists and API setup: [README](../README.md).

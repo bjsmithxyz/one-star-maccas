@@ -12,7 +12,7 @@ type RestaurantHeroProps = {
 export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
   const reviewOverlay = useMemo(
     () => getRandomReviewWithImage(restaurant),
-    [restaurant.slug, restaurant.reviews],
+    [restaurant],
   )
   const placeImageUrl = getSafeImageUrl(restaurant.imageUrl)
   const overlayImageUrl = reviewOverlay
@@ -30,6 +30,9 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
           <img
             src={placeImageUrl}
             alt={`${restaurant.name} exterior`}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
           />
         ) : (
@@ -40,6 +43,7 @@ export function RestaurantHero({ restaurant }: RestaurantHeroProps) {
           <img
             src={overlayImageUrl}
             alt={`Photo from a 1-star review by ${authorLabel}`}
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover opacity-45"
           />
         )}

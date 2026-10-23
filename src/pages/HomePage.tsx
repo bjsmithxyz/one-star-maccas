@@ -1,12 +1,17 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Layout } from '../components/Layout'
 import { RandomButton } from '../components/RandomButton'
-import { ReactionLeaderboard } from '../components/ReactionLeaderboard'
 import { SITE_NAME } from '../constants/branding'
 import { getSiteStats } from '../data'
+import { updatePageMetadata } from '../lib/seo'
 
 export function HomePage() {
   const stats = getSiteStats()
+
+  useEffect(() => {
+    updatePageMetadata({ title: SITE_NAME })
+  }, [])
 
   return (
     <Layout>
@@ -41,12 +46,15 @@ export function HomePage() {
         </div>
       </section>
 
-      <ReactionLeaderboard />
     </Layout>
   )
 }
 
 export function NotFoundPage() {
+  useEffect(() => {
+    updatePageMetadata({ title: `Not Found — ${SITE_NAME}` })
+  }, [])
+
   return (
     <Layout>
       <section className="mx-auto flex max-w-xl flex-col items-center px-4 py-20 text-center sm:px-6">

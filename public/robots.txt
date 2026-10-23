@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bjsmithxyz.github.io/one-star-maccas/sitemap.xml

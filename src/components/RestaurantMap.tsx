@@ -9,9 +9,13 @@ type RestaurantMapProps = {
 }
 
 function pinIcon(reviewCount: number) {
+  const safeReviewCount = Number.isFinite(reviewCount)
+    ? Math.max(0, Math.round(reviewCount))
+    : 0
+
   return L.divIcon({
     className: '',
-    html: `<div class="mcd-map-pin"><span>${reviewCount}</span></div>`,
+    html: `<div class="mcd-map-pin"><span>${safeReviewCount}</span></div>`,
     iconSize: [36, 36],
     iconAnchor: [18, 36],
     popupAnchor: [0, -32],
@@ -19,6 +23,9 @@ function pinIcon(reviewCount: number) {
 }
 
 export function RestaurantMap({ restaurants }: RestaurantMapProps) {
+  const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY
+  const tileUrl = `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(cartoApiKey ?? '')}`
+
   return (
     <MapContainer
       center={[20, 0]}
@@ -30,7 +37,7 @@ export function RestaurantMap({ restaurants }: RestaurantMapProps) {
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        url={tileUrl}
       />
 
       {restaurants.map((restaurant) => (
